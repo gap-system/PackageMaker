@@ -1,23 +1,5 @@
 LoadPackage("autodoc");
 
-DefaultAuthor :=
-  rec( LastName := "Horn",
-       FirstNames := "Max",
-       IsAuthor := true,
-       IsMaintainer := true,
-       Email := "max.horn@math.uni-giessen.de",
-       WWWHome := "http://www.quendi.de/math",
-       PostalAddress := Concatenation(
-               "AG Algebra\n",
-               "Mathematisches Institut\n",
-               "JLU Gießen\n",
-               "Arndtstraße 2\n",
-               "D-35392 Gießen\n",
-               "Germany" ),
-       Place := "Gießen",
-       Institution := "Justus-Liebig-Universität Gießen"
-     );
-
 
 TranslateTemplate := function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
