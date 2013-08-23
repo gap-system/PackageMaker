@@ -1,1 +1,5 @@
-foo
+LoadPackage("AutoDoc");
+
+AutoDoc( "{{PACKAGENAME}}" : scaffold := true, autodoc := true );
+
+QUIT;
