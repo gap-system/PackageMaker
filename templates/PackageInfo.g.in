@@ -1,0 +1,55 @@
+SetPackageInfo( rec(
+
+PackageName := "{{PACKAGENAME}}",
+
+Subtitle := "{{SUBTITLE}}",
+
+Version := "{{VERSION}}",
+
+Date := "{{DATE}}",
+
+Persons := [
+  {{AUTHORS}}
+],
+
+Status := "dev",
+
+PackageWWWHome := "http://www.TODO.INSERT.WEBPAGE.HERE/",
+#PackageWWWHome := "http://github.com/username/{{PACKAGENAME}}/",
+
+ArchiveFormats := ".tar.gz",
+
+ArchiveURL     := Concatenation( ~.PackageWWWHome, "{{PACKAGENAME}}-", ~.Version ),
+README_URL     := Concatenation( ~.PackageWWWHome, "README" ),
+PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
+
+AbstractHTML   :=  "",
+
+PackageDoc := rec(
+  BookName  := "{{PACKAGENAME}}",
+  ArchiveURLSubset := ["doc"],
+  HTMLStart := "doc/chap0.html",
+  PDFFile   := "doc/manual.pdf",
+  SixFile   := "doc/manual.six",
+  LongTitle := "{{SUBTITLE}}",
+),
+
+Dependencies := rec(
+  GAP := ">= 4.6",
+  NeededOtherPackages := [ [ "GAPDoc", ">= 1.5" ] ],
+  SuggestedOtherPackages := [ ],
+  ExternalConditions := []
+                      
+),
+
+AvailabilityTest := function()
+        return true;
+    end,
+
+Autoload := false,
+
+#Keywords := [ " TODO" ],
+
+));
+
+
