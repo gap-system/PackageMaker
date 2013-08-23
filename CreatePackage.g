@@ -20,7 +20,7 @@ DefaultAuthor :=
 
 
 TranslateTemplate := function (template, outfile, subst)
-    local out_stream, in_stream, line, pos, end_pos, key;
+    local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
     
     if template = fail then
         template := Concatenation( "templates/", outfile, ".in" );
@@ -52,7 +52,39 @@ TranslateTemplate := function (template, outfile, subst)
             
             key := line{[pos+2..end_pos-1]};
             if IsBound(subst.(key)) then
-                line := Concatenation( line{[1..pos-1]}, subst.(key), line{[end_pos+2..Length(line)]} );
+                val := subst.(key);
+                if IsList(val) and IsRecord(val[1]) then
+                    WriteAll( out_stream, line{[1..pos-1]} );
+                    PrintTo( out_stream, "[\n" );
+                    for i in [1..Length(val)] do
+                        PrintTo( out_stream, "  rec(\n" );
+                        for key in RecNames(val[i]) do
+                            PrintTo( out_stream, "    ", key, " := ");
+                            tmp := val[i].(key);
+                            if IsString(tmp) then
+                                PrintTo( out_stream, "\"" );
+                                for c in tmp do
+                                    if c = '\n' then
+                                        WriteByte( out_stream, IntChar('\\') );
+                                        WriteByte( out_stream, IntChar('n') );
+                                    else
+                                        WriteByte( out_stream, IntChar(c) );
+                                    fi;
+                                od;
+                                PrintTo( out_stream, "\"") ;
+                            else
+                                PrintTo( out_stream, tmp );
+                            fi;
+                            PrintTo( out_stream, ",\n" );
+                        od;
+                        PrintTo( out_stream, "  ),\n" );
+                    od;
+                    PrintTo( out_stream, "]" );
+                    WriteAll( out_stream, line{[end_pos+2..Length(line)]} );
+                    line := "";
+                else
+                    line := Concatenation( line{[1..pos-1]}, val, line{[end_pos+2..Length(line)]} );
+                fi;
             fi;
             
 #            Print("Found at pos ", [pos,from], " string '", line{[pos..end_pos+1]}, "'\n");
@@ -72,12 +104,12 @@ end;
 
 
 CreatePackage := function( pkgname )
-    local author, version, date, subst;
+    local authors, version, date, subst;
 
-    author := ValueOption( "author" );
-    if author = fail then
+    authors := ValueOption( "authors" );
+    if authors = fail then
         if IsBound( DefaultAuthor ) then
-            author := DefaultAuthor;
+            authors := [ DefaultAuthor ];
         else
             Error("Missing author information");
         fi;
@@ -115,6 +147,8 @@ CreatePackage := function( pkgname )
         VERSION := version,
         DATE := date,
         SUBTITLE := "TODO",
+#        AUTHORS := "[ rec( TODO := true ) ]",
+        AUTHORS := authors,
     );
 
     # TODO: For the source files, use ReadPackage() instead or so?

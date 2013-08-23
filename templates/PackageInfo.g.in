@@ -8,9 +8,7 @@ Version := "{{VERSION}}",
 
 Date := "{{DATE}}",
 
-Persons := [
-  {{AUTHORS}}
-],
+Persons := {{AUTHORS}},
 
 Status := "dev",
 
