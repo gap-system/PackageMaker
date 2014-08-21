@@ -2,6 +2,24 @@ if fail = LoadPackage("AutoDoc", ">= 2014.03.27") then
     Error("AutoDoc version 2014.03.27 is required.");
 fi;
 
+DefaultAuthor :=
+  rec( LastName := "Horn",
+       FirstNames := "Max",
+       IsAuthor := true,
+       IsMaintainer := true,
+       Email := "max.horn@math.uni-giessen.de",
+       WWWHome := "http://www.quendi.de/math",
+       PostalAddress := Concatenation(
+               "AG Algebra\n",
+               "Mathematisches Institut\n",
+               "JLU Gießen\n",
+               "Arndtstraße 2\n",
+               "D-35392 Gießen\n",
+               "Germany" ),
+       Place := "Gießen",
+       Institution := "Justus-Liebig-Universität Gießen"
+     );
+
 
 TranslateTemplate := function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
@@ -92,13 +110,30 @@ CreatePackage := function( pkgname )
 
     authors := ValueOption( "authors" );
     if authors = fail then
+# TODO: When printing the author PostalAddress, right now it prints it
+# as a single string, like this:
+#    PostalAddress := "AG Algebra\nMathematisches Institut\nJLU Gießen\nArndtstraße 2\nD-35392 Gießen\nGermany",
+#
+# Change this to print a multi-line version, using Concatenation, like this:
+#        PostalAddress := Concatenation(
+#                "AG Algebra\n",
+#                "Mathematisches Institut\n",
+#                "JLU Gießen\n",
+#                "Arndtstraße 2\n",
+#                "D-35392 Gießen\n",
+#                "Germany" ),
         if IsBound( DefaultAuthor ) then
             authors := [ DefaultAuthor ];
         else
             Error("Missing author information");
         fi;
     fi;
-    
+
+# TODO:
+# - add GitHub username / repository options,
+#   and use those to set WWW and archive URLs
+# -
+
     version := ValueOption( "version" );
     if version = fail then
         version := "0.1";
@@ -129,7 +164,6 @@ CreatePackage := function( pkgname )
         PACKAGENAME := pkgname,
         DATE := date,
         VERSION := version,
-        DATE := date,
         SUBTITLE := "TODO",
 #        AUTHORS := "[ rec( TODO := true ) ]",
         AUTHORS := authors,
@@ -143,21 +177,241 @@ CreatePackage := function( pkgname )
     TranslateTemplate("templates/gap/PKG.gi", Concatenation("gap/", pkgname, ".gi"), subst );
     TranslateTemplate("templates/gap/PKG.gd", Concatenation("gap/", pkgname, ".gd"), subst );
 
-    
+
     if ValueOption( "kernel" ) <> false then
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkgname, "/src" ) ) then
             Error("Failed to create `src' directory in package directory");
         fi;
-        # TODO: create a simple kernel extension and a build system??? 
-    fi;
-
-    # Optionally: ru
-    if ValueOption( "git" ) <> false then
-        # TODO:
-        # git init
-        # git add
-        # git ci -m "New package PKGNAME"
+        # TODO: create a simple kernel extension and a build system???
     fi;
 
 
+end;
+
+
+FlushOutput := function()
+    # FIXME: Is there a better alternative to this?
+    Print("\c");
+end;
+
+AskYesNoQuestion := function( question )
+    local stream, default, ans;
+
+    stream := InputTextUser();
+
+    Print(question);
+    default := ValueOption( "default" );
+    if default = true then
+        Print(" [Y/n] "); FlushOutput();
+    elif default = false then
+        Print(" [y/N] "); FlushOutput();
+    else
+        default := fail;
+        Print(" [y/n] "); FlushOutput();
+    fi;
+
+    while true do
+        ans := CharInt(ReadByte(stream));
+        if ans in "yYnN" then
+            Print([ans,'\n']);
+            ans := ans in "yY";
+            break;
+        elif ans = '\r' and default <> fail then
+            Print("\n");
+            ans := default;
+            break;
+        elif ans = '\c' then
+            Error("User aborted"); # HACK since Ctrl-C does not work
+        fi;
+    od;
+
+    CloseStream(stream);
+    return ans;
+end;
+
+AskQuestion := function( question )
+    local stream, default, ans;
+
+    default := ValueOption( "default" );
+
+    # Print the question prompt
+    Print(question, " ");
+    if default <> fail then
+        Print("[", default, "] ");
+    fi;
+    FlushOutput();
+
+    # Read user input
+    stream := InputTextUser();
+    ans := ReadLine(stream);    # FIXME: this disables Ctrl-C !!!!
+    CloseStream(stream);
+
+    # Clean it up
+    if ans = "\n" and default <> fail then
+        ans := default;
+    else
+        ans := Chomp(ans);
+    fi;
+    NormalizeWhitespace("ans");
+
+    if ans = "quit" then Error("User aborted"); fi; # HACK since Ctrl-C does not work
+
+    return ans;
+end;
+
+AskAlternativesQuestion := function( question, answers )
+    local stream, default, i, ans;
+
+    Assert(0, IsList(answers) and Length(answers) >= 2);
+
+    default := ValueOption( "default" );
+    if default = fail then
+        default := 1;
+    else
+        Assert(0, default in [1..Length(answers)]);
+    fi;
+
+    for i in [1..Length(answers)] do
+        Print(" (",i,")   ", answers[i][1], "\n");
+    od;
+
+    while true do
+        ans := AskQuestion(question : default := default);
+
+        if Int(ans) in [1..Length(answers)] then
+            ans := answers[Int(ans)][2];
+            break;
+        fi;
+
+        question := "Invalid choice. Please try again";
+    od;
+
+    return ans;
+end;
+
+PackageWizard := function()
+    local pkginfo, repotype, date, p, github, alphanum, kernel;
+    # TODO: store certain answers as user prefs,
+    # at least info about the user
+
+    Print("Welcome to the GAP PackageMaker wizard 0.1\n\
+I will now guide you step-by-step through the package \
+creation process by asking you some questions.\n\n");
+
+    #
+    # Phase 1: Ask lots of questions.
+    #
+
+    pkginfo := rec();
+
+    while true do
+        pkginfo.PackageName := AskQuestion("What is the name of the package?" : isValid := IsValidIdentifier);
+        if IsValidIdentifier(pkginfo.PackageName) then
+            break;
+        fi;
+        Print("Sorry, the package name must be a valid identifier (non-empty, only letters and digits, not a number, not a keyword)\n");
+    od;
+    if IsExistingFile(pkginfo.PackageName) then
+        Error("A file or directory with this name already exists. Please move it away or choose another package name.");
+    fi;
+
+    repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
+                    [
+                      [ "Yes, Git", "git" ],
+                      [ "Yes, Mercurial", "hg" ],
+                      [ "No", fail ]
+                    ] );
+
+    pkginfo.Subtitle := AskQuestion("Enter a short (one sentence) description of your package: "
+                : isValid := g -> Length(g) < 80);
+
+    #
+    # Package version: Just default to 0.1dev. We could ask the user for
+    # a version, but they only need to change one spot for it, and when
+    # creating a new package, this is not so important.
+    #
+    pkginfo.Version := "0.1dev";
+    #pkginfo.Version := AskQuestion("What is the version of your package?" : default := "0.1" );
+
+    #
+    # Package release date: just pick the current date. Similarly to the
+    # package version, we don't allow customizing this in the wizard.
+    #
+    date := DMYDay(Int(Int(CurrentDateTimeString(["-u", "+%s"])) / 86400));
+    date := date + [100, 100, 0];
+    date := List( date, String );
+    date := Concatenation( date[1]{[2,3]}, "/", date[2]{[2,3]}, "/", date[3] );
+    pkginfo.Date := date;
+    #pkginfo.Date := AskQuestion("What is the release date of your package?"
+    #            : default := date );
+
+    #
+    # Package authors and maintainers
+    #
+    pkginfo.Persons := [];
+    Print("\n");
+    Print("Next I will ask you about the package authors and maintainers.\n\n");
+    repeat
+        p := rec();
+        p.LastName := AskQuestion("Last name?");
+        p.FirstNames := AskQuestion("First name(s)?");
+
+        p.IsAuthor := AskYesNoQuestion("Is this one of the package authors?" : default := true);
+        p.IsMaintainer := AskYesNoQuestion("Is this a package maintainer?" : default := true);
+
+        # TODO: for the rest, offer automatic suggestions based on existing
+        # package info records. Offer all matching records, ordered by frequency,
+        # and as last option offer a "custom" choice
+#         p.Email := AskQuestion("Email?");
+#         p.WWWHome := AskQuestion("WWWHome?");
+#         p.Place := AskQuestion("Place?");
+#         p.Institution := AskQuestion("Institution?");
+#         p.PostalAddress := AskQuestion("PostalAddress?");
+
+        Add(pkginfo.Persons, p);
+    until false = AskYesNoQuestion("Add another person?" : default := false);
+
+    if repotype = "git" and true = AskYesNoQuestion("Setup for use with GitHub?" : default := true) then
+        alphanum := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        github := rec();
+        github.username := AskQuestion("What is your GitHub username?"
+                            : isValid := n -> Length(n) > 0 and n[1] <> '-' and
+                                    ForAll(n, c -> c = '-' or c in alphanum));
+        github.reponame := AskQuestion("What is the repository name?"
+                            : default := pkginfo.PackageName,
+                              isValid := n -> Length(n) > 0 and
+                                    ForAll(n, c -> c in "-._" or c in alphanum));
+        github.gh_pages := true;
+        #github.gh_pages := AskYesNoQuestion("Do you want to use GitHubPagesForGAP?" : default := true)
+    fi;
+
+    if github.gh_pages then
+        pkginfo.PackageWWWHome := Concatenation("http://",github.username,".github.io/",github.reponame);
+        # TODO: we need to tweak ArchiveURL here somehow...
+    else
+        pkginfo.PackageWWWHome := AskQuestion("URL of package homapage?");
+
+    fi;
+
+    kernel := AskYesNoQuestion("Does your package need a GAP kernel extension?" : default := false);
+    # TODO: ask for C vs. C++?
+
+return pkginfo;
+
+    #
+    # Phase 2: Create the package directory structure
+    #
+
+    # TODO: where to place the new package? current dir? allow user to customize?
+    # TODO: what if there is already a dir with the given name in the target
+    #       directory? Just error out?
+
+    #if Exists(dir
+
+
+    #
+    # Phase 3 (optional): Setup a git repository and gh-pages
+    #
+
+    # TODO
 end;
