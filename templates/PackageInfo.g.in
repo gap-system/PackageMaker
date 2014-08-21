@@ -1,25 +1,30 @@
 SetPackageInfo( rec(
 
 PackageName := "{{PACKAGENAME}}",
-
 Subtitle := "{{SUBTITLE}}",
-
 Version := "{{VERSION}}",
-
-Date := "{{DATE}}",
+Date := "{{DATE}}", # dd/mm/yyyy format
 
 Persons := {{AUTHORS}},
-
-Status := "dev",
 
 PackageWWWHome := "http://www.TODO.INSERT.WEBPAGE.HERE/",
 #PackageWWWHome := "http://github.com/username/{{PACKAGENAME}}/",
 
-ArchiveFormats := ".tar.gz",
-
 ArchiveURL     := Concatenation( ~.PackageWWWHome, "{{PACKAGENAME}}-", ~.Version ),
 README_URL     := Concatenation( ~.PackageWWWHome, "README" ),
 PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
+
+ArchiveFormats := ".tar.gz",
+
+##  Status information. Currently the following cases are recognized:
+##    "accepted"      for successfully refereed packages
+##    "submitted"     for packages submitted for the refereeing
+##    "deposited"     for packages for which the GAP developers agreed
+##                    to distribute them with the core GAP system
+##    "dev"           for development versions of packages
+##    "other"         for all other packages
+##
+Status := "dev",
 
 AbstractHTML   :=  "",
 
@@ -36,17 +41,16 @@ Dependencies := rec(
   GAP := ">= 4.6",
   NeededOtherPackages := [ [ "GAPDoc", ">= 1.5" ] ],
   SuggestedOtherPackages := [ ],
-  ExternalConditions := []
-                      
+  ExternalConditions := [ ],
 ),
 
 AvailabilityTest := function()
         return true;
     end,
 
-Autoload := false,
+TestFile := "tst/testall.g",
 
-#Keywords := [ " TODO" ],
+#Keywords := [ "TODO" ],
 
 ));
 
