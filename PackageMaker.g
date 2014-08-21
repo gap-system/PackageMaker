@@ -1,4 +1,6 @@
-LoadPackage("autodoc");
+if fail = LoadPackage("AutoDoc", ">= 2014.03.27") then
+    Error("AutoDoc version 2014.03.27 is required.");
+fi;
 
 
 TranslateTemplate := function (template, outfile, subst)
