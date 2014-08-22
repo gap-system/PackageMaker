@@ -38,3 +38,12 @@ DefaultAuthor :=
 ```
 
 This code is released under the GPL 2.
+
+# Contact
+
+Please submit bug reports, suggestions for improvements and patches via
+the [issue tracker](https://github.com/fingolfin/PackageMaker/issues).
+
+You can also contact me directly via [email](max@quendi.de).
+
+Copyright (c) 2013-2014 Max Horn
