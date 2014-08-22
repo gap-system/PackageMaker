@@ -50,13 +50,16 @@ u := rec();
 for p in pers do
     k:=Concatenation(p.LastName, ", ", p.FirstNames);
     #k:=Concatenation(p.FirstNames, " --- ", p.LastName);
+    p := ShallowCopy(p);
+    Unbind(p.IsAuthor);
+    Unbind(p.IsMaintainer);
     if not IsBound(u.(k)) then
         u.(k) := [p];
     else
-        Add(u.(k), p);
+        AddSet(u.(k), p);
     fi;
 od;
 
 for n in Set(RecNames(u)) do
-    Print(n, ": ", Length(u.(n)), " packages\n");
+    Print(n, ": ", Length(u.(n)), " person records\n");
 od;
