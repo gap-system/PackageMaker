@@ -24,7 +24,7 @@ fi;
 
 TranslateTemplate := function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
-    
+
     if template = fail then
         template := Concatenation( "templates/", outfile, ".in" );
     fi;
@@ -33,13 +33,13 @@ TranslateTemplate := function (template, outfile, subst)
     in_stream := InputTextFile( template );
     out_stream := OutputTextFile( outfile, false );
     SetPrintFormattingStatus( out_stream, false );
-    
+
     while not IsEndOfStream( in_stream ) do
         line := ReadLine( in_stream );
         if line = fail then
             break;
         fi;
-        
+
         # Substitute {{ }} blocks
         pos := 0;
         while true do
@@ -47,12 +47,12 @@ TranslateTemplate := function (template, outfile, subst)
             if pos = fail then
                 break;
             fi;
-            
+
             end_pos := PositionSublist( line, "}}", pos + 1 );
             if end_pos = fail then
                 continue;
             fi;
-            
+
             key := line{[pos+2..end_pos-1]};
             if not IsBound(subst.(key)) then
                 Error("Unknown substitution key '",key,"'\n");
@@ -100,17 +100,17 @@ TranslateTemplate := function (template, outfile, subst)
                     line := Concatenation( line{[1..pos-1]}, val, line{[end_pos+2..Length(line)]} );
                 fi;
             fi;
-            
+
 #            Print("Found at pos ", [pos,from], " string '", line{[pos..end_pos+1]}, "'\n");
 #            Print("Found at pos ", [pos,from], " string '", line{[pos+2..end_pos-1]}, "'\n");
-        
+
         od;
-        
+
         WriteAll( out_stream, line );
-    
+
     od;
-    
-    
+
+
     CloseStream(out_stream);
     CloseStream(in_stream);
 end;
@@ -147,12 +147,12 @@ CreatePackage := function( pkgname )
     if version = fail then
         version := "0.1";
     fi;
-    
+
     date := ValueOption( "date" );
     if date = fail then
         date := Today();
     fi;
-    
+
     # TODO: we should prevent overwriting existing data.
     # But during testing, it is useful to be able to re-generate things quickly
 
@@ -347,9 +347,9 @@ PackageWizard := function()
     # TODO: store certain answers as user prefs,
     # at least info about the user
 
-    Print("Welcome to the GAP PackageMaker wizard 0.1\n\
-I will now guide you step-by-step through the package \
-creation process by asking you some questions.\n\n");
+    Print("Welcome to the GAP PackageMaker Wizard!\n",
+          "I will now guide you step-by-step through the package\n",
+          "creation process by asking you some questions.\n\n");
 
     #
     # Phase 1: Ask lots of questions.
@@ -370,14 +370,7 @@ creation process by asking you some questions.\n\n");
         return fail;
     fi;
 
-    repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
-                    [
-                      [ "Yes, Git", "git" ],
-                      [ "Yes, Mercurial", "hg" ],
-                      [ "No", fail ]
-                    ] );
-
-    pkginfo.Subtitle := AskQuestion("Enter a short (one sentence) description of your package: "
+    pkginfo.Subtitle := AskQuestion("Enter a short (one sentence) description of your package:"
                 : isValid := g -> Length(g) < 80);
 
     #
@@ -437,6 +430,13 @@ creation process by asking you some questions.\n\n");
 
         Add(pkginfo.Persons, p);
     until false = AskYesNoQuestion("Add another person?" : default := false);
+
+    repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
+                    [
+                      [ "Yes, Git", "git" ],
+                      [ "Yes, Mercurial", "hg" ],
+                      [ "No", fail ]
+                    ] );
 
     if repotype = "git" and true = AskYesNoQuestion("Setup for use with GitHub?" : default := true) then
         alphanum := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
