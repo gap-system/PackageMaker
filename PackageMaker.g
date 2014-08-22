@@ -84,16 +84,25 @@ TranslateTemplate := function (template, outfile, subst)
                             PrintTo( out_stream, "    ", key, " := ");
                             tmp := val[i].(key);
                             if IsString(tmp) then
-                                PrintTo( out_stream, "\"" );
-                                for c in tmp do
-                                    if c = '\n' then
-                                        WriteByte( out_stream, IntChar('\\') );
-                                        WriteByte( out_stream, IntChar('n') );
-                                    else
-                                        WriteByte( out_stream, IntChar(c) );
-                                    fi;
-                                od;
-                                PrintTo( out_stream, "\"") ;
+                                if '\n' in tmp then
+                                    PrintTo( out_stream, "Concatenation(\n" );
+                                    tmp := SplitString(tmp,"\n");
+                                    for c in [1..Length(tmp)-1] do
+                                        PrintTo( out_stream, "               \"",tmp[c],"\\n\",\n");
+                                    od;
+                                    PrintTo( out_stream, "               \"",tmp[Length(tmp)],"\" )");
+                                else
+                                    PrintTo( out_stream, "\"" );
+                                    for c in tmp do
+                                        if c = '\n' then
+                                            WriteByte( out_stream, IntChar('\\') );
+                                            WriteByte( out_stream, IntChar('n') );
+                                        else
+                                            WriteByte( out_stream, IntChar(c) );
+                                        fi;
+                                    od;
+                                    PrintTo( out_stream, "\"");
+                                fi;
                             else
                                 PrintTo( out_stream, tmp );
                             fi;
@@ -130,18 +139,6 @@ CreatePackage := function( pkgname )
 
     authors := ValueOption( "authors" );
     if authors = fail then
-# TODO: When printing the author PostalAddress, right now it prints it
-# as a single string, like this:
-#    PostalAddress := "AG Algebra\nMathematisches Institut\nJLU Gießen\nArndtstraße 2\nD-35392 Gießen\nGermany",
-#
-# Change this to print a multi-line version, using Concatenation, like this:
-#        PostalAddress := Concatenation(
-#                "AG Algebra\n",
-#                "Mathematisches Institut\n",
-#                "JLU Gießen\n",
-#                "Arndtstraße 2\n",
-#                "D-35392 Gießen\n",
-#                "Germany" ),
         if IsBound( DefaultAuthor ) then
             authors := [ DefaultAuthor ];
         else
