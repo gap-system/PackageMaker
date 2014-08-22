@@ -462,42 +462,41 @@ PackageWizard := function()
         Error("Failed to create package directory");
     fi;
 
-    if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/gap" ) ) then
-        Error("Failed to create `gap' directory in package directory");
-    fi;
-
-    # TODO: For the source files, use ReadPackage() instead or so?
     TranslateTemplate(fail, "README", pkginfo );
-    TranslateTemplate("PackageInfo.g.in", "PackageInfo.g", pkginfo );
+    TranslateTemplate("templates/PackageInfo.g.in", "PackageInfo.g", pkginfo );
     TranslateTemplate(fail, "init.g", pkginfo );
     TranslateTemplate(fail, "read.g", pkginfo );
     TranslateTemplate(fail, "makedoc.g", pkginfo );
+
+
+    if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/gap" ) ) then
+        Error("Failed to create `gap' directory in package directory");
+    fi;
     TranslateTemplate("templates/gap/PKG.gi", Concatenation("gap/", pkginfo.PackageName, ".gi"), pkginfo );
     TranslateTemplate("templates/gap/PKG.gd", Concatenation("gap/", pkginfo.PackageName, ".gd"), pkginfo );
 
     if kernel = true then
         # create a simple kernel extension with a build system
+
+        TranslateTemplate(fail, "Makefile.am", pkginfo );
+        TranslateTemplate(fail, "configure.ac", pkginfo );
+
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/src" ) ) then
             Error("Failed to create `src' directory in package directory");
         fi;
+        TranslateTemplate("templates/src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
 
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/m4" ) ) then
             Error("Failed to create `m4' directory in package directory");
         fi;
-
-        TranslateTemplate(fail, "Makefile.am", pkginfo );
-        TranslateTemplate(fail, "configure.ac", pkginfo );
-        TranslateTemplate(fail, "autogen.sh", pkginfo );
         TranslateTemplate(fail, "m4/ac_find_gap.m4", pkginfo );
-        TranslateTemplate("templates/src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
-        TranslateTemplate("templates/src/PKG.h", Concatenation("src/", pkginfo.PackageName, ".h"), pkginfo );
         
+        TranslateTemplate(fail, "autogen.sh", pkginfo );
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/autogen.sh")); # FIXME HACK
         
         PrintTo( Concatenation( pkginfo.PackageName, "/VERSION" ), pkginfo.Version );
     fi;
     
-
 
     #
     # Phase 3 (optional): Setup a git repository and gh-pages
