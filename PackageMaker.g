@@ -73,7 +73,9 @@ TranslateTemplate := function (template, outfile, subst)
             fi;
             
             key := line{[pos+2..end_pos-1]};
-            if IsBound(subst.(key)) then
+            if not IsBound(subst.(key)) then
+                Error("Unknown substitution key '",key,"'\n");
+            else
                 val := subst.(key);
                 if IsList(val) and IsRecord(val[1]) then
                     WriteAll( out_stream, line{[1..pos-1]} );
@@ -195,7 +197,7 @@ CreatePackage := function( pkgname )
     TranslateTemplate("templates/gap/PKG.gd", Concatenation("gap/", pkgname, ".gd"), subst );
 
 
-    if ValueOption( "kernel" ) <> false then
+    if ValueOption( "kernel" ) = true then
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkgname, "/src" ) ) then
             Error("Failed to create `src' directory in package directory");
         fi;
@@ -238,7 +240,8 @@ AskYesNoQuestion := function( question )
             ans := default;
             break;
         elif ans = '\c' then
-            Error("User aborted"); # HACK since Ctrl-C does not work
+            Print("\nUser aborted\n"); # HACK since Ctrl-C does not work
+            JUMP_TO_CATCH("abort"); # HACK, undocumented command
         fi;
     od;
 
@@ -329,7 +332,9 @@ creation process by asking you some questions.\n\n");
         Print("Sorry, the package name must be a valid identifier (non-empty, only letters and digits, not a number, not a keyword)\n");
     od;
     if IsExistingFile(pkginfo.PackageName) then
-        Error("A file or directory with this name already exists. Please move it away or choose another package name.");
+        Print("ERROR: A file or directory with this name already exists.\n");
+        Print("Please move it away or choose another package name.");
+        return fail;
     fi;
 
     repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
