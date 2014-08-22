@@ -294,8 +294,56 @@ AskAlternativesQuestion := function( question, answers )
     return ans;
 end;
 
+EXTRA_PERSON_KEYS := [ "Email", "WWWHome", "Institution", "Place", "PostalAddress"];
+
+PkgAuthorRecs := function()
+    local pers, pkgname, pkg, u, p, k, name;
+    pers:=[];
+    for pkgname in RecNames(GAPInfo.PackagesInfo) do
+        for pkg in GAPInfo.PackagesInfo.(pkgname) do
+            Append(pers, pkg.Persons);
+        od;
+    od;
+
+    # Assume that entries with identical Firstname + Lastname
+    # correspond to same person. Aggregate their person records
+    # accordingly.
+    u := rec();
+    for p in pers do
+        name := Concatenation(p.LastName, ", ", p.FirstNames);
+
+        if not IsBound(u.(name)) then
+            u.(name) := rec();
+            for k in EXTRA_PERSON_KEYS do
+                u.(name).(k) := [];
+            od;
+        fi;
+
+        for k in EXTRA_PERSON_KEYS do
+            if IsBound(p.(k)) then
+                Add(u.(name).(k), p.(k));
+            fi;
+        od;
+    od;
+
+    # We now may have many duplicate entries for e.g. emails.
+    # Remove the duplicates and sort the remaining unique
+    # keys by how often they occurred before.
+    for name in RecNames(u) do
+        p := u.(name);
+        for k in EXTRA_PERSON_KEYS do
+            p.(k) := Collected(p.(k));
+            SortBy(p.(k), x -> -x[2]);
+            p.(k) := List(p.(k), x -> x[1]);
+        od;
+    od;
+
+    return u;
+end;
+
 PackageWizard := function()
-    local pkginfo, repotype, date, p, github, alphanum, kernel;
+    local pkginfo, repotype, date, p, github, alphanum, kernel,
+        pers, name, key, q, tmp;
     # TODO: store certain answers as user prefs,
     # at least info about the user
 
@@ -350,6 +398,7 @@ creation process by asking you some questions.\n\n");
     #
     # Package authors and maintainers
     #
+    pers := PkgAuthorRecs();
     pkginfo.Persons := [];
     Print("\n");
     Print("Next I will ask you about the package authors and maintainers.\n\n");
@@ -361,14 +410,30 @@ creation process by asking you some questions.\n\n");
         p.IsAuthor := AskYesNoQuestion("Is this one of the package authors?" : default := true);
         p.IsMaintainer := AskYesNoQuestion("Is this a package maintainer?" : default := true);
 
-        # TODO: for the rest, offer automatic suggestions based on existing
-        # package info records. Offer all matching records, ordered by frequency,
-        # and as last option offer a "custom" choice
-#         p.Email := AskQuestion("Email?");
-#         p.WWWHome := AskQuestion("WWWHome?");
-#         p.Place := AskQuestion("Place?");
-#         p.Institution := AskQuestion("Institution?");
-#         p.PostalAddress := AskQuestion("PostalAddress?");
+        name := Concatenation(p.LastName, ", ", p.FirstNames);
+        for key in EXTRA_PERSON_KEYS do
+            q := Concatenation(key, "?");
+            if IsBound(pers.(name)) then
+                tmp := pers.(name).(key);
+            else
+                tmp := [];
+            fi;
+            if Length(tmp) = 0 then
+                p.(key) := AskQuestion(q);
+            elif Length(tmp) = 1 then
+                p.(key) := AskQuestion(q : default := tmp[1]);
+            else
+                tmp := List(tmp, x -> [x,x]);
+                Add(tmp, ["other", fail]);
+                p.(key) := AskAlternativesQuestion(q, tmp);
+                if p.(key) = fail then
+                    p.(key) := AskQuestion(q);
+                fi;
+            fi;
+            #if p.(key) = "" then
+            #    Unbind(p.(key));
+            #fi;
+        od;
 
         Add(pkginfo.Persons, p);
     until false = AskYesNoQuestion("Add another person?" : default := false);
