@@ -41,7 +41,7 @@ TranslateTemplate := function (template, outfile, subst)
         fi;
 
         # Substitute {{ }} blocks
-        pos := 0;
+        pos := -1;
         while true do
             pos := PositionSublist( line, "{{", pos + 1 );
             if pos = fail then
@@ -109,7 +109,6 @@ TranslateTemplate := function (template, outfile, subst)
         WriteAll( out_stream, line );
 
     od;
-
 
     CloseStream(out_stream);
     CloseStream(in_stream);
@@ -444,16 +443,20 @@ PackageWizard := function()
 
     kernel := AskYesNoQuestion("Does your package need a GAP kernel extension?" : default := false);
     # TODO: ask for C vs. C++?
+    if kernel then
+        pkginfo.KERNEL_EXT_INIT_G := Concatenation(
+            "_PATH_SO:=Filename(DirectoriesPackagePrograms(\"",pkginfo.PackageName,"\"), \"",pkginfo.PackageName,".so\");\n",
+            "if _PATH_SO <> fail then\n",
+            "    LoadDynamicModule(_PATH_SO);\n",
+            "fi;\n",
+            "Unbind(_PATH_SO);\n");
+    else
+        pkginfo.KERNEL_EXT_INIT_G := "";
+    fi;
 
     #
     # Phase 2: Create the package directory structure
     #
-
-    # TODO: where to place the new package? current dir? allow user to customize?
-    # TODO: what if there is already a dir with the given name in the target
-    #       directory? Just error out?
-
-    #if Exists(dir
 
     if not AUTODOC_CreateDirIfMissing( pkginfo.PackageName ) then
         Error("Failed to create package directory");
@@ -473,23 +476,41 @@ PackageWizard := function()
     TranslateTemplate("templates/gap/PKG.gd", Concatenation("gap/", pkginfo.PackageName, ".gd"), pkginfo );
 
     if kernel = true then
+        # create a simple kernel extension with a build system
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/src" ) ) then
             Error("Failed to create `src' directory in package directory");
         fi;
 
-        # TODO: create a simple kernel extension and a build system
-#         TranslateTemplate(fail, "Makefile.am", pkginfo );
-#         TranslateTemplate(fail, "configure.ac", pkginfo );
-#         TranslateTemplate(fail, "autogen.sh", pkginfo );
-#         TranslateTemplate(fail, "README", pkginfo );
-#         TranslateTemplate("templates/src/PKG.c", Concatenation("gap/", pkginfo.PackageName, ".c"), pkginfo );
-#         TranslateTemplate("templates/src/PKG.h", Concatenation("gap/", pkginfo.PackageName, ".h"), pkginfo );
+        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/m4" ) ) then
+            Error("Failed to create `m4' directory in package directory");
+        fi;
+
+        TranslateTemplate(fail, "Makefile.am", pkginfo );
+        TranslateTemplate(fail, "configure.ac", pkginfo );
+        TranslateTemplate(fail, "autogen.sh", pkginfo );
+        TranslateTemplate(fail, "m4/ac_find_gap.m4", pkginfo );
+        TranslateTemplate("templates/src/PKG.c", Concatenation("gap/", pkginfo.PackageName, ".c"), pkginfo );
+        TranslateTemplate("templates/src/PKG.h", Concatenation("gap/", pkginfo.PackageName, ".h"), pkginfo );
+        
+        Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/autogen.sh")); # FIXME HACK
+        
+        PrintTo( Concatenation( pkginfo.PackageName, "/VERSION" ), pkginfo.Version );
     fi;
+    
 
 
     #
     # Phase 3 (optional): Setup a git repository and gh-pages
     #
+    if repotype = "git" then
 
-    # TODO
+        # TODO
+
+        #TranslateTemplate(fail, ".gitignore", pkginfo );
+    elif repotype = "hg" then
+
+        # TODO
+
+        #TranslateTemplate(fail, ".hgignore", pkginfo );
+    fi;
 end;
