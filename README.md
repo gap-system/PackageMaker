@@ -2,10 +2,10 @@ PackageMaker
 ============
 
 Create a GAP package skeleton in a few seconds:
-
+```
   Read("PackageMaker.g");
   CreatePackage("MyPackage");
-
+```
 This creates a new directory named MyPackage and populates it with
 all the files needed for a basic package.
 
@@ -17,7 +17,7 @@ You can also provide a list of author records, but since this tends to
 be long, you will probably want to instead set a default author
 record in your gaprc file. E.g. I use this:
 
-
+```
 DefaultAuthor :=
   rec( LastName := "Horn",
        FirstNames := "Max",
@@ -35,6 +35,6 @@ DefaultAuthor :=
        Place := "Gießen",
        Institution := "Justus-Liebig-Universität Gießen"
      );
-
+```
 
 This code is released under the GPL 2.
