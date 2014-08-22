@@ -276,7 +276,7 @@ end;
 Command := function(cmd, args)
     local out, outstream, instream, path, cmd_full, res;
 
-    out:="";
+    out := "";
     outstream:=OutputTextString(out, false);
     instream:=InputTextString("");
 
@@ -289,7 +289,7 @@ Command := function(cmd, args)
         return;
     fi;
 
-    res := Process(DirectoryTemporary(), cmd_full, instream, outstream, args);
+    res := Process(DirectoryCurrent(), cmd_full, instream, outstream, args);
 
     CloseStream(instream);
     CloseStream(outstream);
@@ -504,11 +504,17 @@ PackageWizard := function()
     if repotype = "git" then
 
         # TODO
+        #if Command("git", ["init"]) = fail then
+        #  Error("Failed to create git repository");
+        #fi;
 
         #TranslateTemplate(fail, ".gitignore", pkginfo );
     elif repotype = "hg" then
 
         # TODO
+        #if Command("hg", ["init"]) = fail then
+        #  Error("Failed to create git repository");
+        #fi;
 
         #TranslateTemplate(fail, ".hgignore", pkginfo );
     fi;
