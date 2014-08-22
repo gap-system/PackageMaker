@@ -348,49 +348,6 @@ PackageWizard := function()
     pkginfo.Date := Today();
     #pkginfo.Date := AskQuestion("What is the release date of your package?" : default := Today() );
 
-    #
-    # Package authors and maintainers
-    #
-    pers := PkgAuthorRecs();
-    pkginfo.Persons := [];
-    Print("\n");
-    Print("Next I will ask you about the package authors and maintainers.\n\n");
-    repeat
-        p := rec();
-        p.LastName := AskQuestion("Last name?");
-        p.FirstNames := AskQuestion("First name(s)?");
-
-        p.IsAuthor := AskYesNoQuestion("Is this one of the package authors?" : default := true);
-        p.IsMaintainer := AskYesNoQuestion("Is this a package maintainer?" : default := true);
-
-        name := Concatenation(p.LastName, ", ", p.FirstNames);
-        for key in EXTRA_PERSON_KEYS do
-            q := Concatenation(key, "?");
-            if IsBound(pers.(name)) then
-                tmp := pers.(name).(key);
-            else
-                tmp := [];
-            fi;
-            if Length(tmp) = 0 then
-                p.(key) := AskQuestion(q);
-            elif Length(tmp) = 1 then
-                p.(key) := AskQuestion(q : default := tmp[1]);
-            else
-                tmp := List(tmp, x -> [x,x]);
-                Add(tmp, ["other", fail]);
-                p.(key) := AskAlternativesQuestion(q, tmp);
-                if p.(key) = fail then
-                    p.(key) := AskQuestion(q);
-                fi;
-            fi;
-            #if p.(key) = "" then
-            #    Unbind(p.(key));
-            #fi;
-        od;
-
-        Add(pkginfo.Persons, p);
-    until false = AskYesNoQuestion("Add another person?" : default := false);
-
 #     repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
 #                     [
 #                       [ "Yes, Git", "git" ],
@@ -453,6 +410,49 @@ PackageWizard := function()
     else
         pkginfo.KERNEL_EXT_INIT_G := "";
     fi;
+
+    #
+    # Package authors and maintainers
+    #
+    pers := PkgAuthorRecs();
+    pkginfo.Persons := [];
+    Print("\n");
+    Print("Next I will ask you about the package authors and maintainers.\n\n");
+    repeat
+        p := rec();
+        p.LastName := AskQuestion("Last name?");
+        p.FirstNames := AskQuestion("First name(s)?");
+
+        p.IsAuthor := AskYesNoQuestion("Is this one of the package authors?" : default := true);
+        p.IsMaintainer := AskYesNoQuestion("Is this a package maintainer?" : default := true);
+
+        name := Concatenation(p.LastName, ", ", p.FirstNames);
+        for key in EXTRA_PERSON_KEYS do
+            q := Concatenation(key, "?");
+            if IsBound(pers.(name)) then
+                tmp := pers.(name).(key);
+            else
+                tmp := [];
+            fi;
+            if Length(tmp) = 0 then
+                p.(key) := AskQuestion(q);
+            elif Length(tmp) = 1 then
+                p.(key) := AskQuestion(q : default := tmp[1]);
+            else
+                tmp := List(tmp, x -> [x,x]);
+                Add(tmp, ["other", fail]);
+                p.(key) := AskAlternativesQuestion(q, tmp);
+                if p.(key) = fail then
+                    p.(key) := AskQuestion(q);
+                fi;
+            fi;
+            #if p.(key) = "" then
+            #    Unbind(p.(key));
+            #fi;
+        od;
+
+        Add(pkginfo.Persons, p);
+    until false = AskYesNoQuestion("Add another person?" : default := false);
 
     #
     # Phase 2: Create the package directory structure
