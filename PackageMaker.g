@@ -179,6 +179,9 @@ AskQuestion := function( question )
     FlushOutput();
 
     # Read user input
+    # TODO: use a custom prompt / set PrintPromptHook() so that ctrl-A etc. work right
+    # TODO: temporary disable readline history; i.e. move backup GAPInfo.History,
+    #       then reset it, and after we are done, restore it again
     stream := InputTextUser();
     ans := ReadLine(stream);    # FIXME: this disables Ctrl-C !!!!
     CloseStream(stream);
