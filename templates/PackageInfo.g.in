@@ -1,18 +1,17 @@
 SetPackageInfo( rec(
 
-PackageName := "{{PACKAGENAME}}",
-Subtitle := "{{SUBTITLE}}",
-Version := "{{VERSION}}",
-Date := "{{DATE}}", # dd/mm/yyyy format
+PackageName := "{{PackageName}}",
+Subtitle := "{{Subtitle}}",
+Version := "{{Version}}",
+Date := "{{Date}}", # dd/mm/yyyy format
 
-Persons := {{AUTHORS}},
+Persons := {{Persons}},
 
-PackageWWWHome := "http://www.TODO.INSERT.WEBPAGE.HERE/",
-#PackageWWWHome := "http://github.com/username/{{PACKAGENAME}}/",
+PackageWWWHome := "{{PackageWWWHome}}",
 
-ArchiveURL     := Concatenation( ~.PackageWWWHome, "{{PACKAGENAME}}-", ~.Version ),
-README_URL     := Concatenation( ~.PackageWWWHome, "README" ),
-PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
+ArchiveURL     := {{ArchiveURL}},
+README_URL     := {{README_URL}},
+PackageInfoURL := {{PackageInfoURL}},
 
 ArchiveFormats := ".tar.gz",
 
@@ -29,12 +28,12 @@ Status := "dev",
 AbstractHTML   :=  "",
 
 PackageDoc := rec(
-  BookName  := "{{PACKAGENAME}}",
+  BookName  := "{{PackageName}}",
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "{{SUBTITLE}}",
+  LongTitle := "{{Subtitle}}",
 ),
 
 Dependencies := rec(

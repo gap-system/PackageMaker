@@ -1,5 +1,5 @@
-LoadPackage( "{{PACKAGENAME}}" );
-dirs := DirectoriesPackageLibrary( "{{PACKAGENAME}}", "tst" );
+LoadPackage( "{{PackageName}}" );
+dirs := DirectoriesPackageLibrary( "{{PackageName}}", "tst" );
 
 Test( Filename( dirs, "TODO.tst" ) );
 

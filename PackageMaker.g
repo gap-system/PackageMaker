@@ -28,7 +28,7 @@ TranslateTemplate := function (template, outfile, subst)
     if template = fail then
         template := Concatenation( "templates/", outfile, ".in" );
     fi;
-    outfile := Concatenation( subst.PACKAGENAME, "/", outfile );
+    outfile := Concatenation( subst.PackageName, "/", outfile );
 
     in_stream := InputTextFile( template );
     out_stream := OutputTextFile( outfile, false );
@@ -58,7 +58,7 @@ TranslateTemplate := function (template, outfile, subst)
                 Error("Unknown substitution key '",key,"'\n");
             else
                 val := subst.(key);
-                if IsList(val) and IsRecord(val[1]) then
+                if not IsString(val) and IsList(val) and IsRecord(val[1]) then
                     WriteAll( out_stream, line{[1..pos-1]} );
                     PrintTo( out_stream, "[\n" );
                     for i in [1..Length(val)] do
@@ -165,12 +165,12 @@ CreatePackage := function( pkgname )
     fi;
 
     subst := rec(
-        PACKAGENAME := pkgname,
-        DATE := date,
-        VERSION := version,
-        SUBTITLE := "TODO",
+        PackageName := pkgname,
+        Date := date,
+        Version := version,
+        Subtitle := "TODO",
 #        AUTHORS := "[ rec( TODO := true ) ]",
-        AUTHORS := authors,
+        Persons := authors,
     );
 
     # TODO: For the source files, use ReadPackage() instead or so?
@@ -341,6 +341,34 @@ PkgAuthorRecs := function()
     return u;
 end;
 
+Command := function(cmd, args)
+    local out, outstream, instream, path, cmd_full, res;
+
+    out:="";
+    outstream:=OutputTextString(out, false);
+    instream:=InputTextString("");
+
+    path := DirectoriesSystemPrograms();
+    cmd_full := Filename( path, cmd );
+    if cmd_full = fail then
+        CloseStream(instream);
+        CloseStream(outstream);
+        Error("Could not locate command '", cmd, "' in your PATH");
+        return;
+    fi;
+
+    res := Process(DirectoryTemporary(), cmd_full, instream, outstream, args);
+
+    CloseStream(instream);
+    CloseStream(outstream);
+
+    if res = 0 then
+        return out;
+    fi;
+    return fail;
+end;
+
+
 PackageWizard := function()
     local pkginfo, repotype, date, p, github, alphanum, kernel,
         pers, name, key, q, tmp;
@@ -367,7 +395,7 @@ PackageWizard := function()
     if IsExistingFile(pkginfo.PackageName) then
         Print("ERROR: A file or directory with this name already exists.\n");
         Print("Please move it away or choose another package name.");
-        return fail;
+        return;
     fi;
 
     pkginfo.Subtitle := AskQuestion("Enter a short (one sentence) description of your package:"
@@ -440,10 +468,18 @@ PackageWizard := function()
 
     if repotype = "git" and true = AskYesNoQuestion("Setup for use with GitHub?" : default := true) then
         alphanum := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        # Try to get github username from git config
+        tmp := Command("git", ["config", "github.user"]);
+        if tmp <> fail then
+            tmp := Chomp(tmp);
+        fi;
+
         github := rec();
         github.username := AskQuestion("What is your GitHub username?"
                             : isValid := n -> Length(n) > 0 and n[1] <> '-' and
-                                    ForAll(n, c -> c = '-' or c in alphanum));
+                                    ForAll(n, c -> c = '-' or c in alphanum),
+                              default := tmp);
         github.reponame := AskQuestion("What is the repository name?"
                             : default := pkginfo.PackageName,
                               isValid := n -> Length(n) > 0 and
@@ -452,18 +488,28 @@ PackageWizard := function()
         #github.gh_pages := AskYesNoQuestion("Do you want to use GitHubPagesForGAP?" : default := true)
     fi;
 
-    if github.gh_pages then
+    if IsBound(github) and github.gh_pages then
         pkginfo.PackageWWWHome := Concatenation("http://",github.username,".github.io/",github.reponame);
-        # TODO: we need to tweak ArchiveURL here somehow...
+        pkginfo.ArchiveURL     := Concatenation("Concatenation(\"https://github.com/",github.username,"/",github.reponame,"/\",\n",
+                                  "                                \"releases/download/v\", ~.Version,\n",
+                                  "                                \"/",pkginfo.PackageName,"-\", ~.Version)");
     else
-        pkginfo.PackageWWWHome := AskQuestion("URL of package homapage?");
+        pkginfo.PackageWWWHome := AskQuestion("URL of package homepage?");
+        pkginfo.ArchiveURL     := Concatenation( "Concatenation( ~.PackageWWWHome, \"",
+                                    pkginfo.PackageName, "-\", ~.Version )" );
 
     fi;
+    
+    # Ensure the URL ends with a trailing slash.
+    if Length(pkginfo.PackageWWWHome) > 0 and pkginfo.PackageWWWHome[Length(pkginfo.PackageWWWHome)] <> '/' then
+        Add(pkginfo.PackageWWWHome, '/');
+    fi;
+
+    pkginfo.README_URL     := "Concatenation( ~.PackageWWWHome, \"README\" )";
+    pkginfo.PackageInfoURL := "Concatenation( ~.PackageWWWHome, \"PackageInfo.g\" )";
 
     kernel := AskYesNoQuestion("Does your package need a GAP kernel extension?" : default := false);
     # TODO: ask for C vs. C++?
-
-return pkginfo;
 
     #
     # Phase 2: Create the package directory structure
@@ -474,6 +520,37 @@ return pkginfo;
     #       directory? Just error out?
 
     #if Exists(dir
+
+    if not AUTODOC_CreateDirIfMissing( pkginfo.PackageName ) then
+        Error("Failed to create package directory");
+    fi;
+
+    if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/gap" ) ) then
+        Error("Failed to create `gap' directory in package directory");
+    fi;
+
+    # TODO: For the source files, use ReadPackage() instead or so?
+    TranslateTemplate(fail, "README", pkginfo );
+    TranslateTemplate(fail, "PackageInfo.g", pkginfo );
+    TranslateTemplate(fail, "init.g", pkginfo );
+    TranslateTemplate(fail, "read.g", pkginfo );
+    TranslateTemplate(fail, "makedoc.g", pkginfo );
+    TranslateTemplate("templates/gap/PKG.gi", Concatenation("gap/", pkginfo.PackageName, ".gi"), pkginfo );
+    TranslateTemplate("templates/gap/PKG.gd", Concatenation("gap/", pkginfo.PackageName, ".gd"), pkginfo );
+
+    if kernel = true then
+        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/src" ) ) then
+            Error("Failed to create `src' directory in package directory");
+        fi;
+
+        # TODO: create a simple kernel extension and a build system
+#         TranslateTemplate(fail, "Makefile.am", pkginfo );
+#         TranslateTemplate(fail, "configure.ac", pkginfo );
+#         TranslateTemplate(fail, "autogen.sh", pkginfo );
+#         TranslateTemplate(fail, "README", pkginfo );
+#         TranslateTemplate("templates/src/PKG.c", Concatenation("gap/", pkginfo.PackageName, ".c"), pkginfo );
+#         TranslateTemplate("templates/src/PKG.h", Concatenation("gap/", pkginfo.PackageName, ".h"), pkginfo );
+    fi;
 
 
     #
