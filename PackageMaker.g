@@ -113,9 +113,18 @@ TranslateTemplate := function (template, outfile, subst)
     
     CloseStream(out_stream);
     CloseStream(in_stream);
-    
 end;
 
+# Return current date as a string with format DD/MM/YYYY.
+# FIXME: This code has year 10,000 bug!
+Today := function()
+    local date;
+    date := DMYDay(Int(Int(CurrentDateTimeString(["-u", "+%s"])) / 86400));
+    date := date + [100, 100, 0];
+    date := List( date, String );
+    date := Concatenation( date[1]{[2,3]}, "/", date[2]{[2,3]}, "/", date[3] );
+    return date;
+end;
 
 CreatePackage := function( pkgname )
     local authors, version, date, subst;
@@ -141,12 +150,7 @@ CreatePackage := function( pkgname )
     
     date := ValueOption( "date" );
     if date = fail then
-        # Use current date, in format DD/MM/YYYY
-        # FIXME: This code has year 10,000 bug!
-        date := DMYDay(Int(Int(CurrentDateTimeString(["-u", "+%s"])) / 86400));
-        date := date + [100, 100, 0];
-        date := List( date, String );
-        date := Concatenation( date[1]{[2,3]}, "/", date[2]{[2,3]}, "/", date[3] );
+        date := Today();
     fi;
     
     # TODO: we should prevent overwriting existing data.
@@ -340,13 +344,8 @@ creation process by asking you some questions.\n\n");
     # Package release date: just pick the current date. Similarly to the
     # package version, we don't allow customizing this in the wizard.
     #
-    date := DMYDay(Int(Int(CurrentDateTimeString(["-u", "+%s"])) / 86400));
-    date := date + [100, 100, 0];
-    date := List( date, String );
-    date := Concatenation( date[1]{[2,3]}, "/", date[2]{[2,3]}, "/", date[3] );
-    pkginfo.Date := date;
-    #pkginfo.Date := AskQuestion("What is the release date of your package?"
-    #            : default := date );
+    pkginfo.Date := Today();
+    #pkginfo.Date := AskQuestion("What is the release date of your package?" : default := Today() );
 
     #
     # Package authors and maintainers
