@@ -392,12 +392,13 @@ PackageWizard := function()
         Add(pkginfo.Persons, p);
     until false = AskYesNoQuestion("Add another person?" : default := false);
 
-    repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
-                    [
-                      [ "Yes, Git", "git" ],
-                      [ "Yes, Mercurial", "hg" ],
-                      [ "No", fail ]
-                    ] );
+#     repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
+#                     [
+#                       [ "Yes, Git", "git" ],
+#                       [ "Yes, Mercurial", "hg" ],
+#                       [ "No", fail ]
+#                     ] );
+    repotype := false;  # TODO: implement this
 
     if repotype = "git" and true = AskYesNoQuestion("Setup for use with GitHub?" : default := true) then
         alphanum := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
