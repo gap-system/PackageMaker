@@ -26,7 +26,7 @@ TranslateTemplate := function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
 
     if template = fail then
-        template := Concatenation( "templates/", outfile, ".in" );
+        template := Concatenation( "templates/", outfile );
     fi;
     outfile := Concatenation( subst.PackageName, "/", outfile );
 
@@ -468,7 +468,7 @@ PackageWizard := function()
 
     # TODO: For the source files, use ReadPackage() instead or so?
     TranslateTemplate(fail, "README", pkginfo );
-    TranslateTemplate(fail, "PackageInfo.g", pkginfo );
+    TranslateTemplate("PackageInfo.g.in", "PackageInfo.g", pkginfo );
     TranslateTemplate(fail, "init.g", pkginfo );
     TranslateTemplate(fail, "read.g", pkginfo );
     TranslateTemplate(fail, "makedoc.g", pkginfo );
@@ -489,8 +489,8 @@ PackageWizard := function()
         TranslateTemplate(fail, "configure.ac", pkginfo );
         TranslateTemplate(fail, "autogen.sh", pkginfo );
         TranslateTemplate(fail, "m4/ac_find_gap.m4", pkginfo );
-        TranslateTemplate("templates/src/PKG.c", Concatenation("gap/", pkginfo.PackageName, ".c"), pkginfo );
-        TranslateTemplate("templates/src/PKG.h", Concatenation("gap/", pkginfo.PackageName, ".h"), pkginfo );
+        TranslateTemplate("templates/src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
+        TranslateTemplate("templates/src/PKG.h", Concatenation("src/", pkginfo.PackageName, ".h"), pkginfo );
         
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/autogen.sh")); # FIXME HACK
         
