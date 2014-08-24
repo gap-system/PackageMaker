@@ -9,13 +9,13 @@ it super easy and convenient to create a new GAP package.
 2. Open a terminal in the PackageMaker directory.
 
 3. Start GAP, load the PackageMaker script and run the package wizeard.
-```
+  ```
   Read("PackageMaker.g");
   PackageWizard();
-```
-This will ask you a couple questions about your new package, then
-creates a new directory for it and populates it with all the files
-needed for a basic package.
+  ```
+  This will ask you a couple questions about your new package, then
+  creates a new directory for it and populates it with all the files
+  needed for a basic package.
 
 4. Move the newly created package directory to a suitable place.
 
