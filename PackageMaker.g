@@ -22,6 +22,8 @@ if fail = LoadPackage("AutoDoc", ">= 2014.03.27") then
     Error("AutoDoc version 2014.03.27 is required.");
 fi;
 
+PACKAGE_MAKER_VERSION := "0.5";
+
 TranslateTemplate := function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
 
@@ -310,7 +312,7 @@ PackageWizard := function()
     # TODO: store certain answers as user prefs,
     # at least info about the user
 
-    Print("Welcome to the GAP PackageMaker Wizard!\n",
+    Print("Welcome to the GAP PackageMaker Wizard (version ",PACKAGE_MAKER_VERSION,").\n",
           "I will now guide you step-by-step through the package\n",
           "creation process by asking you some questions.\n\n");
 
