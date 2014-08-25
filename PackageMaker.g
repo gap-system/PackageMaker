@@ -161,7 +161,7 @@ AskYesNoQuestion := function( question )
             Print([ans,'\n']);
             ans := ans in "yY";
             break;
-        elif ans = '\r' and default <> fail then
+        elif ans in "\n\r" and default <> fail then
             Print("\n");
             ans := default;
             break;
