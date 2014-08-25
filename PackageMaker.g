@@ -188,9 +188,6 @@ AskQuestion := function( question )
     FlushOutput();
 
     # Read user input
-    # TODO: use a custom prompt / set PrintPromptHook() so that ctrl-A etc. work right
-    # TODO: temporary disable readline history; i.e. move backup GAPInfo.History,
-    #       then reset it, and after we are done, restore it again
     stream := InputTextUser();
     ans := ReadLine(stream);    # FIXME: this disables Ctrl-C !!!!
     CloseStream(stream);
@@ -316,8 +313,6 @@ end;
 PackageWizard := function()
     local pkginfo, repotype, date, p, github, alphanum, kernel,
         pers, name, key, q, tmp;
-    # TODO: store certain answers as user prefs,
-    # at least info about the user
 
     Print("Welcome to the GAP PackageMaker Wizard (version ",PACKAGE_MAKER_VERSION,").\n",
           "I will now guide you step-by-step through the package\n",
