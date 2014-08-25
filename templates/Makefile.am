@@ -1,3 +1,9 @@
+#
+# {{PackageName}}: {{Subtitle}}
+#
+# This file is part of the build system of a GAP kernel extension.
+# Requires automake.
+#
 ACLOCAL_AMFLAGS = -I m4
 
 BINARCHDIR = bin/$(GAPARCH)

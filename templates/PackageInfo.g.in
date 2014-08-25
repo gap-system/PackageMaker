@@ -1,3 +1,8 @@
+#
+# {{PackageName}}: {{Subtitle}}
+#
+# This file contains package meta data.
+#
 SetPackageInfo( rec(
 
 PackageName := "{{PackageName}}",

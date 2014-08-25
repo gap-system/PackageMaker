@@ -1,6 +1,10 @@
-dnl ##
-dnl ## Process this file with autoconf to produce a configure script.
-dnl ## 
+#
+# {{PackageName}}: {{Subtitle}}
+#
+# This file is part of the build system of a GAP kernel extension.
+# Requires GNU autoconf, GNU automake and GNU libtool.
+#
+
 AC_PREREQ(2.68)
 LT_PREREQ([2.4.2])
 AC_INIT([{{PackageName}}], m4_esyscmd([tr -d '\n' < VERSION]))
