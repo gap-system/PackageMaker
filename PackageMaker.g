@@ -120,6 +120,13 @@ end;
 # FIXME: This code has year 10,000 bug!
 Today := function()
     local date;
+    date := CurrentDateTimeString(["-u", "+%s"]);
+    if date = fail then
+        # TODO: CurrentDateTimeString fails on Windows...
+        # can we get the date separately?
+        return "TODO";
+    fi;
+    
     date := DMYDay(Int(Int(CurrentDateTimeString(["-u", "+%s"])) / 86400));
     date := date + [100, 100, 0];
     date := List( date, String );
