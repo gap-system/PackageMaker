@@ -392,6 +392,9 @@ PackageWizard := function()
                                   "                                \"/",pkginfo.PackageName,"-\", ~.Version)");
     else
         pkginfo.PackageWWWHome := AskQuestion("URL of package homepage?");
+        if pkginfo.PackageWWWHome = "" then
+            pkginfo.PackageWWWHome := "http://TODO";
+        fi;
         pkginfo.ArchiveURL     := Concatenation( "Concatenation( ~.PackageWWWHome, \"",
                                     pkginfo.PackageName, "-\", ~.Version )" );
 
