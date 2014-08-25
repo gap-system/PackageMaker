@@ -478,12 +478,16 @@ PackageWizard := function()
     TranslateTemplate(fail, "read.g", pkginfo );
     TranslateTemplate(fail, "makedoc.g", pkginfo );
 
-
     if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/gap" ) ) then
         Error("Failed to create `gap' directory in package directory");
     fi;
     TranslateTemplate("templates/gap/PKG.gi", Concatenation("gap/", pkginfo.PackageName, ".gi"), pkginfo );
     TranslateTemplate("templates/gap/PKG.gd", Concatenation("gap/", pkginfo.PackageName, ".gd"), pkginfo );
+
+    if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/tst" ) ) then
+        Error("Failed to create `tst' directory in package directory");
+    fi;
+    TranslateTemplate(fail, "tst/testall.g", pkginfo );
 
     if kernel = true then
         # create a simple kernel extension with a build system
