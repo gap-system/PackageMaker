@@ -417,8 +417,11 @@ PackageWizard := function()
             "    LoadDynamicModule(_PATH_SO);\n",
             "fi;\n",
             "Unbind(_PATH_SO);\n");
+        pkginfo.KERNEL_EXT_MAKEDOC_G := Concatenation("\nPrintTo(\"VERSION\", PackageInfo(\"",pkginfo.PackageName,"\")[1].Version);\n");
+
     else
         pkginfo.KERNEL_EXT_INIT_G := "";
+        pkginfo.KERNEL_EXT_MAKEDOC_G := "";
     fi;
 
     #

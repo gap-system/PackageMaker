@@ -8,5 +8,5 @@ if fail = LoadPackage("AutoDoc", ">= 2014.03.27") then
 fi;
 
 AutoDoc( "{{PackageName}}" : scaffold := true, autodoc := true );
-
+{{KERNEL_EXT_MAKEDOC_G}}
 QUIT;
