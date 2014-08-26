@@ -22,7 +22,7 @@ if fail = LoadPackage("AutoDoc", ">= 2014.03.27") then
     Error("AutoDoc version 2014.03.27 is required.");
 fi;
 
-PACKAGE_MAKER_VERSION := "0.5";
+PACKAGE_MAKER_VERSION := "0.6";
 
 TranslateTemplate := function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
