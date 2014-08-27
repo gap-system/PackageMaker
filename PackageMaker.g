@@ -22,6 +22,8 @@ if fail = LoadPackage("AutoDoc", ">= 2014.03.27") then
     Error("AutoDoc version 2014.03.27 is required.");
 fi;
 
+LoadPackage("io"); # try to load io (it is optional)
+
 PACKAGE_MAKER_VERSION := "0.6";
 
 TranslateTemplate := function (template, outfile, subst)
@@ -114,24 +116,6 @@ TranslateTemplate := function (template, outfile, subst)
 
     CloseStream(out_stream);
     CloseStream(in_stream);
-end;
-
-# Return current date as a string with format DD/MM/YYYY.
-# FIXME: This code has year 10,000 bug!
-Today := function()
-    local date;
-    date := CurrentDateTimeString(["-u", "+%s"]);
-    if date = fail then
-        # TODO: CurrentDateTimeString fails on Windows...
-        # can we get the date separately?
-        return "TODO";
-    fi;
-    
-    date := DMYDay(Int(Int(CurrentDateTimeString(["-u", "+%s"])) / 86400));
-    date := date + [100, 100, 0];
-    date := List( date, String );
-    date := Concatenation( date[1]{[2,3]}, "/", date[2]{[2,3]}, "/", date[3] );
-    return date;
 end;
 
 FlushOutput := function()
@@ -286,16 +270,16 @@ Command := function(cmd, args)
     local out, outstream, instream, path, cmd_full, res;
 
     out := "";
-    outstream:=OutputTextString(out, false);
-    instream:=InputTextString("");
+    outstream := OutputTextString(out, false);
+    instream := InputTextString("");
 
     path := DirectoriesSystemPrograms();
     cmd_full := Filename( path, cmd );
     if cmd_full = fail then
         CloseStream(instream);
         CloseStream(outstream);
-        Error("Could not locate command '", cmd, "' in your PATH");
-        return;
+        #Error("Could not locate command '", cmd, "' in your PATH");
+        return fail;
     fi;
 
     res := Process(DirectoryCurrent(), cmd_full, instream, outstream, args);
@@ -309,6 +293,33 @@ Command := function(cmd, args)
     return fail;
 end;
 
+# Return current date as a string with format DD/MM/YYYY.
+Today := function()
+    local secs, tmp, date;
+    if IsBound(IO_gettimeofday) then
+        secs := IO_gettimeofday().tv_sec;
+    elif IsBound(CurrentDateTimeString) then
+        tmp := CurrentDateTimeString(["-u", "+%s"]);
+    else
+        tmp := Chomp(Command("date", [ "-u", "+%s" ]));
+    fi;
+
+    if IsBound(tmp) and IsString(tmp) and tmp <> "unknown" then
+        secs := Int(tmp);
+    fi;
+
+    if not IsBound(secs) then
+        # We failed to determine the current date
+        return "TODO";
+    fi;
+
+    date := DMYDay(Int(secs / 86400));
+    date := date + [100, 100, 0];
+    date := List( date, String );
+    date := Concatenation( date[1]{[2,3]}, "/", date[2]{[2,3]}, "/", date[3] );
+
+    return date;
+end;
 
 PackageWizard := function()
     local pkginfo, repotype, date, p, github, alphanum, kernel,
