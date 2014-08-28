@@ -485,9 +485,10 @@ PackageWizard := function()
                     p.(key) := AskQuestion(q);
                 fi;
             fi;
-            #if p.(key) = "" then
-            #    Unbind(p.(key));
-            #fi;
+            if p.(key) = "" then
+                p.(key) := "TODO";
+                #Unbind(p.(key));
+            fi;
         od;
 
         Add(pkginfo.Persons, p);
