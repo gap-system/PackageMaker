@@ -25,7 +25,6 @@ dnl ## Setup automake
 dnl ##
 AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 AM_SILENT_RULES([yes])
-AM_MAINTAINER_MODE
 AM_PROG_AR
 
 dnl ##
