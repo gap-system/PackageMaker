@@ -21,10 +21,11 @@
 BindGlobal( "TranslateTemplate", function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
 
+    tmp := DirectoriesPackageLibrary( "PackageMaker", "templates" );
     if template = fail then
-        template := Concatenation( "templates/", outfile );
+        template := Filename( tmp, outfile );
     else
-        template := Concatenation( "templates/", template );
+        template := Filename( tmp, template );
     fi;
     outfile := Concatenation( subst.PackageName, "/", outfile );
 
