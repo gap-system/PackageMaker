@@ -352,11 +352,11 @@ PackageWizard := function()
                 : isValid := g -> Length(g) < 80);
 
     #
-    # Package version: Just default to 0.1dev. We could ask the user for
-    # a version, but they only need to change one spot for it, and when
-    # creating a new package, this is not so important.
+    # Package version: Just default to some value. We could ask the user
+    # for a version, but they only need to change one spot for it, and
+    # when creating a new package, this is not so important.
     #
-    pkginfo.Version := "0.1dev";
+    pkginfo.Version := "0.1";
     #pkginfo.Version := AskQuestion("What is the version of your package?" : default := "0.1" );
 
     #
