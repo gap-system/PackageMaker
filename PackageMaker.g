@@ -160,7 +160,7 @@ AskYesNoQuestion := function( question )
 end;
 
 AskQuestion := function( question )
-    local stream, default, ans;
+    local stream, default, ans, history_bak;
 
     default := ValueOption( "default" );
 
@@ -173,7 +173,10 @@ AskQuestion := function( question )
 
     # Read user input
     stream := InputTextUser();
+    history_bak := GAPInfo.History;
+    GAPInfo.History := rec( Last := 0, Lines := [ ], Pos := 1 );
     ans := ReadLine(stream);    # FIXME: this disables Ctrl-C !!!!
+    GAPInfo.History := history_bak;
     CloseStream(stream);
 
     # Clean it up
