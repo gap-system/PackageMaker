@@ -10,7 +10,7 @@ dnl ## Setup autoconf
 dnl ##
 AC_PREREQ([2.68])
 AC_INIT([{{PackageName}}], m4_esyscmd([tr -d '\n' < VERSION]))
-AC_CONFIG_SRCDIR([src/{{PackageName}}.c])
+AC_CONFIG_SRCDIR([src/{{PackageName}}.{{KERNEL_EXT_LANG_EXT}}])
 AC_CONFIG_HEADER([src/pkgconfig.h:cnf/pkgconfig.h.in])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([cnf])
@@ -29,10 +29,9 @@ AM_MAINTAINER_MODE
 AM_PROG_AR
 
 dnl ##
-dnl ## C is the language
+dnl ## Set the language
 dnl ##
-AC_PROG_CC
-AC_LANG([C])
+{{KERNEL_EXT_LANG_CONFIGURE_AC}}
 
 dnl ##
 dnl ## Setup libtool (for building the GAP kernel extension)

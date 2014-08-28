@@ -419,9 +419,15 @@ PackageWizard := function()
     pkginfo.README_URL     := "Concatenation( ~.PackageWWWHome, \"README\" )";
     pkginfo.PackageInfoURL := "Concatenation( ~.PackageWWWHome, \"PackageInfo.g\" )";
 
-    kernel := AskYesNoQuestion("Does your package need a GAP kernel extension?" : default := false);
-    # TODO: ask for C vs. C++?
-    if kernel then
+    kernel := AskAlternativesQuestion("Shall your package provide a GAP kernel extension?",
+                    [
+                      [ "No", fail ],
+                      [ "Yes, written in C", "C" ],
+                      [ "Yes, written in C++", "C++" ],
+                    ] );
+
+    if kernel <> fail then
+
         pkginfo.KERNEL_EXT_INIT_G := Concatenation(
             "_PATH_SO:=Filename(DirectoriesPackagePrograms(\"",pkginfo.PackageName,"\"), \"",pkginfo.PackageName,".so\");\n",
             "if _PATH_SO <> fail then\n",
@@ -429,10 +435,19 @@ PackageWizard := function()
             "fi;\n",
             "Unbind(_PATH_SO);\n");
         pkginfo.KERNEL_EXT_MAKEDOC_G := Concatenation("\nPrintTo(\"VERSION\", PackageInfo(\"",pkginfo.PackageName,"\")[1].Version);\n");
+        if kernel = "C++" then
+            pkginfo.KERNEL_EXT_LANG_CONFIGURE_AC := "AC_PROG_CXX\nAC_LANG([C++])";
+            pkginfo.KERNEL_EXT_LANG_EXT := "cc";
+        else
+            pkginfo.KERNEL_EXT_LANG_CONFIGURE_AC := "AC_PROG_CC\nAC_LANG([C])";
+            pkginfo.KERNEL_EXT_LANG_EXT := "c";
+        fi;
 
     else
         pkginfo.KERNEL_EXT_INIT_G := "";
         pkginfo.KERNEL_EXT_MAKEDOC_G := "";
+        pkginfo.KERNEL_EXT_LANG_CONFIGURE_AC := "";
+        pkginfo.KERNEL_EXT_LANG_EXT := "";
     fi;
 
     #
@@ -503,7 +518,7 @@ PackageWizard := function()
     fi;
     TranslateTemplate(fail, "tst/testall.g", pkginfo );
 
-    if kernel = true then
+    if kernel <> fail then
         # create a simple kernel extension with a build system
 
         TranslateTemplate(fail, "Makefile.am", pkginfo );
@@ -512,7 +527,11 @@ PackageWizard := function()
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/src" ) ) then
             Error("Failed to create `src' directory in package directory");
         fi;
-        TranslateTemplate("templates/src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
+        if kernel = "C++" then
+            TranslateTemplate("templates/src/PKG.cc", Concatenation("src/", pkginfo.PackageName, ".cc"), pkginfo );
+        else
+            TranslateTemplate("templates/src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
+        fi;
 
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/m4" ) ) then
             Error("Failed to create `m4' directory in package directory");

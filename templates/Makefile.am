@@ -11,7 +11,7 @@ GAPINSTALLLIB = $(abs_top_srcdir)/$(BINARCHDIR)/{{PackageName}}.so
 
 lib_LTLIBRARIES = {{PackageName}}.la
 
-{{PackageName}}_la_SOURCES = src/{{PackageName}}.c
+{{PackageName}}_la_SOURCES = src/{{PackageName}}.{{KERNEL_EXT_LANG_EXT}}
 {{PackageName}}_la_CPPFLAGS = $(GAP_CPPFLAGS) -DCONFIG_H
 # Note that the latter is only for GAP 4.4.12
 {{PackageName}}_la_LDFLAGS = -module -avoid-version
@@ -32,7 +32,7 @@ distclean-local:
 	rm -rf bin/*
 	(cd doc ; ./clean)
 
-doc:	doc/manual.six
+doc: doc/manual.six
 
 doc/manual.six: doc/*.xml PackageInfo.g
 	($(GAPROOT)/bin/gap.sh -A makedoc.g)
