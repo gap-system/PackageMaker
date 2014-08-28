@@ -23,6 +23,8 @@ BindGlobal( "TranslateTemplate", function (template, outfile, subst)
 
     if template = fail then
         template := Concatenation( "templates/", outfile );
+    else
+        template := Concatenation( "templates/", template );
     fi;
     outfile := Concatenation( subst.PackageName, "/", outfile );
 
@@ -497,7 +499,7 @@ InstallGlobalFunction( PackageWizard, function()
     fi;
 
     TranslateTemplate(fail, "README", pkginfo );
-    TranslateTemplate("templates/PackageInfo.g.in", "PackageInfo.g", pkginfo );
+    TranslateTemplate("PackageInfo.g.in", "PackageInfo.g", pkginfo );
     TranslateTemplate(fail, "init.g", pkginfo );
     TranslateTemplate(fail, "read.g", pkginfo );
     TranslateTemplate(fail, "makedoc.g", pkginfo );
@@ -505,8 +507,8 @@ InstallGlobalFunction( PackageWizard, function()
     if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/gap" ) ) then
         Error("Failed to create `gap' directory in package directory");
     fi;
-    TranslateTemplate("templates/gap/PKG.gi", Concatenation("gap/", pkginfo.PackageName, ".gi"), pkginfo );
-    TranslateTemplate("templates/gap/PKG.gd", Concatenation("gap/", pkginfo.PackageName, ".gd"), pkginfo );
+    TranslateTemplate("gap/PKG.gi", Concatenation("gap/", pkginfo.PackageName, ".gi"), pkginfo );
+    TranslateTemplate("gap/PKG.gd", Concatenation("gap/", pkginfo.PackageName, ".gd"), pkginfo );
 
     if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/tst" ) ) then
         Error("Failed to create `tst' directory in package directory");
@@ -523,9 +525,9 @@ InstallGlobalFunction( PackageWizard, function()
             Error("Failed to create `src' directory in package directory");
         fi;
         if kernel = "C++" then
-            TranslateTemplate("templates/src/PKG.cc", Concatenation("src/", pkginfo.PackageName, ".cc"), pkginfo );
+            TranslateTemplate("src/PKG.cc", Concatenation("src/", pkginfo.PackageName, ".cc"), pkginfo );
         else
-            TranslateTemplate("templates/src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
+            TranslateTemplate("src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
         fi;
 
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/m4" ) ) then
