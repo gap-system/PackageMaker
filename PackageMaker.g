@@ -366,13 +366,12 @@ PackageWizard := function()
     pkginfo.Date := Today();
     #pkginfo.Date := AskQuestion("What is the release date of your package?" : default := Today() );
 
-#     repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
-#                     [
-#                       [ "Yes, Git", "git" ],
-#                       [ "Yes, Mercurial", "hg" ],
-#                       [ "No", fail ]
-#                     ] );
-    repotype := false;  # TODO: implement this
+    repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
+                    [
+                      [ "Yes, Git", "git" ],
+                      [ "Yes, Mercurial", "hg" ],
+                      [ "No", fail ],
+                    ] );
 
     if repotype = "git" and true = AskYesNoQuestion("Setup for use with GitHub?" : default := true) then
         alphanum := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -384,6 +383,10 @@ PackageWizard := function()
         fi;
 
         github := rec();
+        github.gh_pages := AskYesNoQuestion("Do you want to use GitHubPagesForGAP?" : default := true);
+    fi;
+
+    if IsBound(github) and github.gh_pages then
         github.username := AskQuestion("What is your GitHub username?"
                             : isValid := n -> Length(n) > 0 and n[1] <> '-' and
                                     ForAll(n, c -> c = '-' or c in alphanum),
@@ -392,11 +395,7 @@ PackageWizard := function()
                             : default := pkginfo.PackageName,
                               isValid := n -> Length(n) > 0 and
                                     ForAll(n, c -> c in "-._" or c in alphanum));
-        github.gh_pages := true;
-        #github.gh_pages := AskYesNoQuestion("Do you want to use GitHubPagesForGAP?" : default := true)
-    fi;
 
-    if IsBound(github) and github.gh_pages then
         pkginfo.PackageWWWHome := Concatenation("http://",github.username,".github.io/",github.reponame);
         pkginfo.ArchiveURL     := Concatenation("Concatenation(\"https://github.com/",github.username,"/",github.reponame,"/\",\n",
                                   "                                \"releases/download/v\", ~.Version,\n",
@@ -551,19 +550,25 @@ PackageWizard := function()
     #
     if repotype = "git" then
 
+        TranslateTemplate(fail, ".gitignore", pkginfo );
+
+        Print("TODO: create git repository");
+
         # TODO
         #if Command("git", ["init"]) = fail then
         #  Error("Failed to create git repository");
         #fi;
 
-        #TranslateTemplate(fail, ".gitignore", pkginfo );
     elif repotype = "hg" then
+
+        TranslateTemplate(fail, ".hgignore", pkginfo );
+
+        Print("TODO: create hg repository");
 
         # TODO
         #if Command("hg", ["init"]) = fail then
         #  Error("Failed to create git repository");
         #fi;
 
-        #TranslateTemplate(fail, ".hgignore", pkginfo );
     fi;
 end;
