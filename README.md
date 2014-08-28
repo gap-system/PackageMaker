@@ -19,6 +19,13 @@ it super easy and convenient to create a new GAP package.
 
 4. Move the newly created package directory to a suitable place.
 
+Next, you may wish to learn more about the purpose of the various
+generated files as well as the the meaning and correct usage of the
+entries in the PackageInfo.g file.
+
+Tp do that, please consult the manual of the "Example" package as well
+as the comments in its PackageInfo.g file.
+
 # Contact
 
 Please submit bug reports, suggestions for improvements and patches via
