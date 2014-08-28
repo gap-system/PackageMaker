@@ -10,7 +10,7 @@ SetPackageInfo( rec(
 
 PackageName := "PackageMaker",
 Subtitle := "A GAP package for creating new GAP packages",
-Version := "0.1",
+Version := "0.7",
 Date := "28/08/2014", # dd/mm/yyyy format
 
 Persons := [
@@ -38,10 +38,10 @@ PackageWWWHome := "http://fingolfin.github.io/PackageMaker/",
 ArchiveURL     := Concatenation("https://github.com/fingolfin/PackageMaker/",
                                 "releases/download/v", ~.Version,
                                 "/PackageMaker-", ~.Version),
-README_URL     := Concatenation( ~.PackageWWWHome, "README" ),
+README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
 PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
 
-ArchiveFormats := ".tar.gz",
+ArchiveFormats := ".tar.gz .tar.bz2",
 
 ##  Status information. Currently the following cases are recognized:
 ##    "accepted"      for successfully refereed packages
@@ -66,8 +66,14 @@ PackageDoc := rec(
 
 Dependencies := rec(
   GAP := ">= 4.6",
-  NeededOtherPackages := [ [ "GAPDoc", ">= 1.5" ] ],
-  SuggestedOtherPackages := [ ],
+  NeededOtherPackages := [
+      [ "GAPDoc", ">= 1.5" ],
+      [ "AutoDoc", ">= 2014.03.27" ],
+    ],
+  SuggestedOtherPackages := [
+      [ "AtlasRep", ">= 1.5" ], # for CurrentDateTimeString
+      [ "io", ">= 3.0" ],       # for IO_gettimeofday
+    ],
   ExternalConditions := [ ],
 ),
 

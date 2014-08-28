@@ -1,16 +1,19 @@
 PackageMaker
 ============
 
-PackageMaker is a [GAP](http://www.gap-system.org/) script that makes
-it super easy and convenient to create a new GAP package.
+PackageMaker is a [GAP](http://www.gap-system.org/) package that makes
+it easy and convenient to create new GAP packages.
+
+TODO: adjust the instructions below to the fact that PackageMaker now is
+a package itself.
 
 1. Download PackageMaker and extract it.
 
 2. Open a terminal in the PackageMaker directory.
 
-3. Start GAP, load the PackageMaker script and run the package wizeard.
+3. Start GAP, load the PackageMaker package and run the package wizeard.
   ```
-  Read("PackageMaker.g");
+  LoadPackage("PackageMaker");
   PackageWizard();
   ```
   This will ask you a couple questions about your new package, then
