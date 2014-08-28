@@ -42,5 +42,5 @@
 /src/pkgconfig.h
 /src/stamp-h1
 
-{{PackageName}}.la
-src/*{{PackageName}}.lo
+*.la
+src/*.lo
