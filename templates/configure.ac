@@ -63,6 +63,11 @@ else
 fi
 
 dnl ##
+dnl ## Rebuild configure if VERSION file changes
+dnl ##
+AC_SUBST([CONFIG_STATUS_DEPENDENCIES], ['$(top_srcdir)/VERSION'])
+
+dnl ##
 dnl ## Output everything
 dnl ##
 AC_CONFIG_FILES([Makefile])
