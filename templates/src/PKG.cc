@@ -85,7 +85,7 @@ static StructInitInfo module = {
 };
 
 extern "C"
-StructInitInfo * Init__Dynamic ( void )
+StructInitInfo *Init__Dynamic( void )
 {
-  return &module;
+    return &module;
 }

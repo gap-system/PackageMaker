@@ -76,7 +76,7 @@ static StructInitInfo module = {
  /* postRestore = */ 0
 };
 
-StructInitInfo * Init__Dynamic ( void )
+StructInitInfo *Init__Dynamic( void )
 {
-  return &module;
+    return &module;
 }
