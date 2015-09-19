@@ -385,11 +385,13 @@ InstallGlobalFunction( PackageWizard, function()
     fi;
 
     if IsBound(github) and github.gh_pages then
-        github.username := AskQuestion("What is your GitHub username?"
+        Print("I need to know the URL of the GitHub repository.\n");
+        Print("It is of the form https://github/USER/REPOS.\n");
+        github.username := AskQuestion("What is USER (typically your GitHub username)?"
                             : isValid := n -> Length(n) > 0 and n[1] <> '-' and
                                     ForAll(n, c -> c = '-' or c in alphanum),
                               default := tmp);
-        github.reponame := AskQuestion("What is the repository name?"
+        github.reponame := AskQuestion("What is REPOS, the repository name?"
                             : default := pkginfo.PackageName,
                               isValid := n -> Length(n) > 0 and
                                     ForAll(n, c -> c in "-._" or c in alphanum));
