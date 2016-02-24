@@ -415,7 +415,7 @@ InstallGlobalFunction( PackageWizard, function()
         Add(pkginfo.PackageWWWHome, '/');
     fi;
 
-    pkginfo.README_URL     := "Concatenation( ~.PackageWWWHome, \"README\" )";
+    pkginfo.README_URL     := "Concatenation( ~.PackageWWWHome, \"README.md\" )";
     pkginfo.PackageInfoURL := "Concatenation( ~.PackageWWWHome, \"PackageInfo.g\" )";
 
     kernel := AskAlternativesQuestion("Shall your package provide a GAP kernel extension?",
@@ -501,7 +501,7 @@ InstallGlobalFunction( PackageWizard, function()
         Error("Failed to create package directory");
     fi;
 
-    TranslateTemplate(fail, "README", pkginfo );
+    TranslateTemplate(fail, "README.md", pkginfo );
     TranslateTemplate("PackageInfo.g.in", "PackageInfo.g", pkginfo );
     TranslateTemplate(fail, "init.g", pkginfo );
     TranslateTemplate(fail, "read.g", pkginfo );
