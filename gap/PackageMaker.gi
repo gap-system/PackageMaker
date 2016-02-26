@@ -320,7 +320,7 @@ BindGlobal( "Today", function()
 end );
 
 InstallGlobalFunction( PackageWizard, function()
-    local pkginfo, repotype, date, p, github, alphanum, kernel,
+    local pkginfo, create_repo, date, p, github, alphanum, kernel,
         pers, name, key, q, tmp;
 
     Print("Welcome to the GAP PackageMaker Wizard.\n",
@@ -364,14 +364,10 @@ InstallGlobalFunction( PackageWizard, function()
     pkginfo.Date := Today();
     #pkginfo.Date := AskQuestion("What is the release date of your package?" : default := Today() );
 
-    repotype := AskAlternativesQuestion("Shall I create a Git or Mercurial repository for your new package?",
-                    [
-                      [ "Yes, Git", "git" ],
-                      [ "Yes, Mercurial", "hg" ],
-                      [ "No", fail ],
-                    ] );
+    github := rec();
+    create_repo := AskYesNoQuestion("Shall I prepare your new package for GitHub?" : default := true);
 
-    if repotype = "git" and true = AskYesNoQuestion("Setup for use with GitHub?" : default := true) then
+    if create_repo then
         alphanum := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         # Try to get github username from git config
@@ -380,11 +376,9 @@ InstallGlobalFunction( PackageWizard, function()
             tmp := Chomp(tmp);
         fi;
 
-        github := rec();
+        # TODO: just always do this??
         github.gh_pages := AskYesNoQuestion("Do you want to use GitHubPagesForGAP?" : default := true);
-    fi;
 
-    if IsBound(github) and github.gh_pages then
         Print("I need to know the URL of the GitHub repository.\n");
         Print("It is of the form https://github/USER/REPOS.\n");
         github.username := AskQuestion("What is USER (typically your GitHub username)?"
@@ -566,7 +560,7 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
     #
     # Phase 3 (optional): Setup a git repository and gh-pages
     #
-    if repotype = "git" then
+    if create_repo then
 
         TranslateTemplate(fail, ".gitignore", pkginfo );
 
@@ -576,17 +570,10 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
         #if Command("git", ["init"]) = fail then
         #  Error("Failed to create git repository");
         #fi;
-
-    elif repotype = "hg" then
-
-        TranslateTemplate(fail, ".hgignore", pkginfo );
-
-        Print("TODO: create hg repository");
-
-        # TODO
-        #if Command("hg", ["init"]) = fail then
-        #  Error("Failed to create git repository");
-        #fi;
+        
+        if github.gh_pages then
+            # TODO
+        fi;
 
     fi;
 end );
