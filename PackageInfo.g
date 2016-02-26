@@ -33,14 +33,17 @@ Persons := [
   ),
 ],
 
-PackageWWWHome := "http://fingolfin.github.io/PackageMaker/",
-
-ArchiveURL     := Concatenation("https://github.com/fingolfin/PackageMaker/",
-                                "releases/download/v", ~.Version,
-                                "/PackageMaker-", ~.Version),
-README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
-PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
-
+SourceRepository := rec(
+    Type := "git",
+    URL := Concatenation( "https://github.com/fingolfin/", ~.PackageName ),
+),
+IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
+PackageWWWHome  := Concatenation( "https://fingolfin.github.io/", ~.PackageName ),
+README_URL      := Concatenation( ~.PackageWWWHome, "/README" ),
+PackageInfoURL  := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
+ArchiveURL      := Concatenation( ~.SourceRepository.URL,
+                                 "/releases/download/v", ~.Version,
+                                 "/", ~.PackageName ,"-", ~.Version ),
 ArchiveFormats := ".tar.gz .tar.bz2",
 
 ##  Status information. Currently the following cases are recognized:
