@@ -19,6 +19,11 @@
 /doc/*.toc
 /doc/manual.pdf
 
+/doc/PackageMaker.xml
+/doc/_AutoDocMainFile.xml
+/doc/_Chapter_PackageMaker.xml
+/doc/title.xml
+
 .deps/
 .dirstamp
 .libs/
