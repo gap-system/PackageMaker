@@ -1,6 +1,6 @@
 # Find the location of GAP
 # Sets GAPROOT, GAPARCH and GAP_CPPFLAGS appropriately
-# Can be configured using --with-gaproot=... and --with-configname=...
+# Can be configured using --with-gaproot=... and CONFIGNAME=...
 #######################################################################
 
 AC_DEFUN([AC_FIND_GAP],
@@ -75,7 +75,7 @@ AC_DEFUN([AC_FIND_GAP],
         
   AC_MSG_CHECKING([for GAP architecture])
   GAPARCH="Unknown"
-  . $GAPROOT/$SYSINFO
+  source $GAPROOT/$SYSINFO
   if test "x$GAParch" != "x"; then
     GAPARCH=$GAParch
   fi
@@ -152,7 +152,7 @@ AC_DEFUN([AC_FIND_GAP],
     GAP_CPPFLAGS="$GAP_CPPFLAGS -I$ARCHPATH/extern/gmp/include"
     AC_MSG_RESULT([$ARCHPATH/extern/gmp/include/gmp.h])
   else
-    AC_MSG_RESULT([not found, GAP was compiled without GMP])
+    AC_MSG_RESULT([not found, GAP was compiled without its own GMP])
   fi;
  
   AC_SUBST(GAPARCH)
