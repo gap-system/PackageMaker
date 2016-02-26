@@ -68,7 +68,7 @@ Dependencies := rec(
   GAP := ">= 4.6",
   NeededOtherPackages := [
       [ "GAPDoc", ">= 1.5" ],
-      [ "AutoDoc", ">= 2014.03.27" ],
+      [ "AutoDoc", ">= 2016.02.16" ],
     ],
   SuggestedOtherPackages := [
       [ "AtlasRep", ">= 1.5" ], # for CurrentDateTimeString
