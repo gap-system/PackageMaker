@@ -14,13 +14,7 @@ Version := "{{Version}}",
 Date := "{{Date}}", # dd/mm/yyyy format
 
 Persons := {{Persons}},
-
-PackageWWWHome := "{{PackageWWWHome}}",
-
-ArchiveURL     := {{ArchiveURL}},
-README_URL     := {{README_URL}},
-PackageInfoURL := {{PackageInfoURL}},
-
+{{PackageURLs}}
 ArchiveFormats := ".tar.gz",
 
 ##  Status information. Currently the following cases are recognized:
