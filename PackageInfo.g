@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "PackageMaker",
 Subtitle := "A GAP package for creating new GAP packages",
-Version := "0.7",
-Date := "28/08/2014", # dd/mm/yyyy format
+Version := "0.8",
+Date := "01/03/2016", # dd/mm/yyyy format
 
 Persons := [
   rec(
@@ -43,17 +43,9 @@ README_URL      := Concatenation( ~.PackageWWWHome, "/README" ),
 PackageInfoURL  := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
 ArchiveURL      := Concatenation( ~.SourceRepository.URL,
                                  "/releases/download/v", ~.Version,
-                                 "/", ~.PackageName ,"-", ~.Version ),
-ArchiveFormats := ".tar.gz .tar.bz2",
+                                 "/", ~.PackageName, "-", ~.Version ),
+ArchiveFormats := ".tar.gz",
 
-##  Status information. Currently the following cases are recognized:
-##    "accepted"      for successfully refereed packages
-##    "submitted"     for packages submitted for the refereeing
-##    "deposited"     for packages for which the GAP developers agreed
-##                    to distribute them with the core GAP system
-##    "dev"           for development versions of packages
-##    "other"         for all other packages
-##
 Status := "dev",
 
 AbstractHTML   :=  "",
