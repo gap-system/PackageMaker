@@ -291,39 +291,118 @@ BindGlobal( "Command", function(cmd, args)
     return fail;
 end );
 
-BindGlobal( "CreateGitRepos", function(dir)
-    local path, stdin, stdout, cmd_full, res;
+BindGlobal( "CreateGitRepository", function(dir, github)
+    local path, stdin, stdout, cmd_full, RunGit, remote, tmp, shell;
 
     path := DirectoriesSystemPrograms();
     cmd_full := Filename( path, "git" );
     if cmd_full = fail then
         Error("Could not locate 'git' in your PATH");
-        return fail;
     fi;
 
     stdin := InputTextUser();
     stdout := OutputTextUser();
-
-    Print("Creating the git repository");
-    res := Process(dir, cmd_full, stdin, stdout, ["init"]);
-    if res <> 0 then
-        Error("Failed to create git repository");
-        return fail;
-    fi;
-
-    res := Process(dir, cmd_full, stdin, stdout, ["add", "."]);
-    if res <> 0 then
-        Error("Failed to add files to git repository");
-        return fail;
-    fi;
     
-    res := Process(dir, cmd_full, stdin, stdout, ["commit", "-m", "initial import"]);
-    if res <> 0 then
-        Error("Failed to commit files to git repository");
-        return fail;
+    RunGit := function(args, errorMsg)
+        local res;
+        res := Process(dir, cmd_full, stdin, stdout, args);
+        if res <> 0 then
+            Error(errorMsg);
+        fi;
+    end;
+
+    Print("Creating the git repository...\n");
+
+    RunGit(["init"],
+           "Failed to create git repository");
+    RunGit(["add", "."],
+           "Failed to add files to git repository");
+    RunGit(["commit", "-m", "initial import"],
+           "Failed to commit files to git repository");
+
+    # TODO: ask whether to use SSH or https?
+    remote := Concatenation("https://github.com/", github.username, "/", github.reponame, ".git");
+    #remote := Concatenation("git@github.com:", github.username, "/", github.reponame, ".git");
+
+    RunGit(["remote", "add", "origin", remote],
+           "Failed to add GitHub remote to git repository");
+
+#   The following command unfortunately does not work:
+#     RunGit(["branch", "-u", "origin", "master"],
+#            "Failed to set upstream remote for master branch");
+
+    Print("Done creating git repository.\n");
+
+    # push to remote, but only after the user said it was OK
+    tmp := Concatenation("https://github.com/", github.username, "/", github.reponame);
+    Print("I will now wait for you to create <", tmp, "> via <https://github.com/new>.\n");
+    Print("Afterwards, I can push the new package repository to GitHub.\n");
+    if AskYesNoQuestion("Shall I push the package repository to GitHub now?" : default := true) <> true then
+        return;
     fi;
 
-    return true;
+    RunGit(["push", "-u", "origin", "master"],
+           "Failed to push changes to GitHub");
+
+    if not github.gh_pages then
+        return;
+    fi;
+
+    Print("\n");
+    Print("Creating gh-pages branch...\n");
+    
+    # We now setup everything for GitHubPagesForGAP, following the instructions
+    # from its README.
+
+    # Create another clone of the repository in gh-pages. The extra options
+    # reduce network traffic.
+    RunGit(["clone", "--reference", ".", "--dissociate", remote, "gh-pages"],
+           "Failed to clone into gh-pages subdirectory");
+
+    # cd gh-pages
+    dir := Directory(Filename(dir, "gh-pages"));
+    if not IsDirectoryPath(dir) then
+        Error(dir, " is not a directory");
+    fi;
+
+    RunGit(["remote", "add", "gh-gap", "https://github.com/fingolfin/GitHubPagesForGAP"],
+           "Failed to add gh-gap remote to gh-pages");
+
+    RunGit(["fetch", "gh-gap"],
+           "Failed to fetch gh-gap remote");
+
+    RunGit(["checkout", "-b", "gh-pages", "gh-gap/gh-pages", "--no-track"],
+           "Failed to setup gh-pages branch");
+
+    # We use the shell for the next commands to get glob expansion
+    shell := Filename(DirectoriesSystemPrograms(), "sh");
+
+    # cp -f ../PackageInfo.g ../README .
+    tmp := Process(dir, shell, stdin, stdout, ["-c", "cp -f ../PackageInfo.g ../README.md ."]);
+    if tmp <> 0 then
+        Error("Failed to copy files to gh-pages directory");
+    fi;
+
+    # cp -f ../doc/*.{css,html,js,txt} doc/
+    # TODO: the above only makes sense if we run "makedoc.g" before that.
+    # Which could fail (?) depending on the installed AutoDoc version...
+
+    # gap update.g
+    tmp := Process(dir, shell, stdin, stdout, ["-c", "gap -A -q update.g"]);
+    if tmp <> 0 then
+        Error("Failed to copy files to gh-pages directory");
+    fi;
+
+    # add, commit and push
+    RunGit(["add", "-A"],
+           "Failed adding files to gh-pages branch");
+
+    RunGit(["commit", "-m", "Setup gh-pages based on GitHubPagesForGAP"],
+           "Failed committing files to gh-pages branch");
+
+    RunGit(["push", "-u", "origin", "gh-pages"],
+           "Failed to push gh-pages branch to GitHub");
+
 end );
 
 # Return current date as a string with format DD/MM/YYYY.
@@ -599,16 +678,11 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
 
         TranslateTemplate(fail, ".gitignore", pkginfo );
 
-        dir := Directory( pkginfo.PackageName );
+        dir := Directory(pkginfo.PackageName);
         if not IsDirectoryPath(dir) then
             Error(dir, " is not a directory");
         fi;
 
-        CreateGitRepos(dir);
-        
-        if github.gh_pages then
-            # TODO
-        fi;
-
+        CreateGitRepository(dir, github);
     fi;
 end );
