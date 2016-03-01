@@ -291,6 +291,41 @@ BindGlobal( "Command", function(cmd, args)
     return fail;
 end );
 
+BindGlobal( "CreateGitRepos", function(dir)
+    local path, stdin, stdout, cmd_full, res;
+
+    path := DirectoriesSystemPrograms();
+    cmd_full := Filename( path, "git" );
+    if cmd_full = fail then
+        #Error("Could not locate command '", cmd, "' in your PATH");
+        return fail;
+    fi;
+
+    stdin := InputTextUser();
+    stdout := OutputTextUser();
+
+    Print("Creating the git repository");
+    res := Process(dir, cmd_full, stdin, stdout, ["init"]);
+    if res <> 0 then
+        Error("Failed to create git repository");
+        return fail;
+    fi;
+
+    res := Process(dir, cmd_full, stdin, stdout, ["add", "."]);
+    if res <> 0 then
+        Error("Failed to add files to git repository");
+        return fail;
+    fi;
+    
+    res := Process(dir, cmd_full, stdin, stdout, ["commit", "-m", "initial import"]);
+    if res <> 0 then
+        Error("Failed to commit files to git repository");
+        return fail;
+    fi;
+
+    return true;
+end );
+
 # Return current date as a string with format DD/MM/YYYY.
 BindGlobal( "Today", function()
     local secs, tmp, date;
@@ -321,7 +356,7 @@ end );
 
 InstallGlobalFunction( PackageWizard, function()
     local pkginfo, create_repo, date, p, github, alphanum, kernel,
-        pers, name, key, q, tmp;
+        pers, name, key, q, tmp, dir;
 
     Print("Welcome to the GAP PackageMaker Wizard.\n",
           "I will now guide you step-by-step through the package\n",
@@ -564,12 +599,12 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
 
         TranslateTemplate(fail, ".gitignore", pkginfo );
 
-        Print("TODO: create git repository");
+        dir := Directory( pkginfo.PackageName );
+        if not IsDirectoryPath(dir) then
+            Error(dir, " is not a directory");
+        fi;
 
-        # TODO
-        #if Command("git", ["init"]) = fail then
-        #  Error("Failed to create git repository");
-        #fi;
+        CreateGitRepos(dir);
         
         if github.gh_pages then
             # TODO
