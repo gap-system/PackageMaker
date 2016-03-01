@@ -20,8 +20,7 @@
 /doc/manual.pdf
 
 /doc/PackageMaker.xml
-/doc/_AutoDocMainFile.xml
-/doc/_Chapter_PackageMaker.xml
+/doc/_*.xml
 /doc/title.xml
 
 .deps/
@@ -49,3 +48,6 @@
 
 *.la
 src/*.lo
+
+/tmp/
+/gh-pages/
