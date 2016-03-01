@@ -297,7 +297,7 @@ BindGlobal( "CreateGitRepos", function(dir)
     path := DirectoriesSystemPrograms();
     cmd_full := Filename( path, "git" );
     if cmd_full = fail then
-        #Error("Could not locate command '", cmd, "' in your PATH");
+        Error("Could not locate 'git' in your PATH");
         return fail;
     fi;
 
