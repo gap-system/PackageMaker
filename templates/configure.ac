@@ -12,9 +12,8 @@ AC_PREREQ([2.68])
 AC_INIT([{{PackageName}}], m4_esyscmd([tr -d '\n' < VERSION]))
 AC_CONFIG_SRCDIR([src/{{PackageName}}.{{KERNEL_EXT_LANG_EXT}}])
 AC_CONFIG_HEADER([src/pkgconfig.h:cnf/pkgconfig.h.in])
-AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_MACRO_DIR([cnf/m4])
 AC_CONFIG_AUX_DIR([cnf])
-m4_include([m4/ac_find_gap.m4])
 
 dnl ##
 dnl ## Get canonical host info
