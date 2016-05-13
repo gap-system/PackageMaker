@@ -1,0 +1,26 @@
+  
+  [1X1 [33X[0;0YPackageMaker[133X[101X
+  
+  [33X[0;0YTODO 1[133X
+  
+  
+  [1X1.1 [33X[0;0YWhat is PackageMaker?[133X[101X
+  
+  [33X[0;0YTODO 2[133X
+  
+  
+  [1X1.2 [33X[0;0YUsing PackageMaker?[133X[101X
+  
+  [33X[0;0YTODO 3[133X
+  
+  [1X1.2-1 PackageWizard[101X
+  
+  [29X[2XPackageWizard[102X( [3Xarg[103X ) [32X function
+  
+  [33X[0;0YInteractively create a package skeleton[133X
+  
+  
+  [1X1.3 [33X[0;0YWhat next?[133X[101X
+  
+  [33X[0;0YTODO 5[133X
+  

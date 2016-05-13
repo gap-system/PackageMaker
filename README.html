@@ -1,6 +1,5 @@
 ---
 layout: default
 ---
-<pre>
-{% include_relative README %}
-</pre>
+{% capture README %}{% include_relative README.md %}{% endcapture %}
+{{ README | markdownify }}
