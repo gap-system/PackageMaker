@@ -365,7 +365,7 @@ BindGlobal( "CreateGitRepository", function(dir, github)
         Error(dir, " is not a directory");
     fi;
 
-    RunGit(["remote", "add", "gh-gap", "https://github.com/fingolfin/GitHubPagesForGAP"],
+    RunGit(["remote", "add", "gh-gap", "https://github.com/gap-system/GitHubPagesForGAP"],
            "Failed to add gh-gap remote to gh-pages");
 
     RunGit(["fetch", "gh-gap"],

@@ -35,10 +35,10 @@ Persons := [
 
 SourceRepository := rec(
     Type := "git",
-    URL := Concatenation( "https://github.com/fingolfin/", ~.PackageName ),
+    URL := Concatenation( "https://github.com/gap-system/", ~.PackageName ),
 ),
 IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
-PackageWWWHome  := Concatenation( "https://fingolfin.github.io/", ~.PackageName ),
+PackageWWWHome  := Concatenation( "https://gap-system.github.io/", ~.PackageName ),
 README_URL      := Concatenation( ~.PackageWWWHome, "/README" ),
 PackageInfoURL  := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
 ArchiveURL      := Concatenation( ~.SourceRepository.URL,

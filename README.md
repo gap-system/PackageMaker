@@ -32,6 +32,6 @@ as the comments in its PackageInfo.g file.
 # Contact
 
 Please submit bug reports, suggestions for improvements and patches via
-the [issue tracker](https://github.com/fingolfin/PackageMaker/issues).
+the [issue tracker](https://github.com/gap-system/PackageMaker/issues).
 
 You can also contact me directly via [email](max@quendi.de).
