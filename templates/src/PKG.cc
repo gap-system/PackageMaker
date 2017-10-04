@@ -9,37 +9,27 @@
 #include <gmp.h>
 
 extern "C" {
-#include "src/compiled.h"          /* GAP headers                */
+#include "src/compiled.h"          /* GAP headers */
 }
 
 
-Obj TestCommand(Obj self)
+Obj FuncTestCommand(Obj self)
 {
     return INTOBJ_INT(42);
 }
 
-Obj TestCommandWithParams(Obj self, Obj param, Obj param2)
+Obj FuncTestCommandWithParams(Obj self, Obj param, Obj param2)
 {
     /* simply return the first parameter */
     return param;
 }
 
-
-typedef Obj (* GVarFunc)(/*arguments*/);
-
-#define GVAR_FUNC_TABLE_ENTRY(srcfile, name, nparam, params) \
-  {#name, nparam, \
-   params, \
-   (GVarFunc)name, \
-   srcfile ":Func" #name }
-
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
-    GVAR_FUNC_TABLE_ENTRY("{{PackageName}}.c", TestCommand, 0, ""),
-    GVAR_FUNC_TABLE_ENTRY("{{PackageName}}.c", TestCommandWithParams, 2, "param, param2"),
+    GVAR_FUNC(TestCommand, 0, ""),
+    GVAR_FUNC(TestCommandWithParams, 2, "param, param2"),
 
-	{ 0 } /* Finish with an empty entry */
-
+    { 0 } /* Finish with an empty entry */
 };
 
 /******************************************************************************
@@ -47,10 +37,10 @@ static StructGVarFunc GVarFuncs [] = {
 */
 static Int InitKernel( StructInitInfo *module )
 {
-    /* init filters and functions                                          */
+    /* init filters and functions */
     InitHdlrFuncsFromTable( GVarFuncs );
 
-    /* return success                                                      */
+    /* return success */
     return 0;
 }
 
@@ -62,7 +52,7 @@ static Int InitLibrary( StructInitInfo *module )
     /* init filters and functions */
     InitGVarFuncsFromTable( GVarFuncs );
 
-    /* return success                                                      */
+    /* return success */
     return 0;
 }
 
