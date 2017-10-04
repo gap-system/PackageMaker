@@ -224,7 +224,9 @@ BindGlobal( "PkgAuthorRecs", function()
     pers:=[];
     for pkgname in RecNames(GAPInfo.PackagesInfo) do
         for pkg in GAPInfo.PackagesInfo.(pkgname) do
-            Append(pers, pkg.Persons);
+            if IsBound(pkg.Persons) then
+                Append(pers, pkg.Persons);
+            fi;
         od;
     od;
 
