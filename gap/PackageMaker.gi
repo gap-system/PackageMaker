@@ -659,10 +659,13 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
             TranslateTemplate("src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
         fi;
 
-        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/m4" ) ) then
+        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/cnf" ) ) then
+            Error("Failed to create `cnf' directory in package directory");
+        fi;
+        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/cnf/m4" ) ) then
             Error("Failed to create `m4' directory in package directory");
         fi;
-        TranslateTemplate(fail, "m4/ac_find_gap.m4", pkginfo );
+        TranslateTemplate(fail, "cnf/m4/ac_find_gap.m4", pkginfo );
 
         TranslateTemplate(fail, "autogen.sh", pkginfo );
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/autogen.sh")); # FIXME HACK
