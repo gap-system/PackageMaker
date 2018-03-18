@@ -1,7 +1,8 @@
 name: PackageMaker
 version: 0.8
-date: 01/03/2016
-description: A GAP package for creating new GAP packages
+date: 2016-03-01
+description: |
+    A GAP package for creating new GAP packages
 
 authors:
     - name: Max Horn
@@ -29,15 +30,15 @@ suggested-pkgs:
       version: ">= 3.0"
       url: "https://gap-packages.github.io/io"
 
-www: https://fingolfin.github.io/PackageMaker
-readme: https://fingolfin.github.io/PackageMaker/README
-packageinfo: https://fingolfin.github.io/PackageMaker/PackageInfo.g
+www: https://gap-system.github.io/PackageMaker
+readme: README.md
+packageinfo: https://gap-system.github.io/PackageMaker/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/fingolfin/PackageMaker/releases/download/v0.8/PackageMaker-0.8.tar.gz
+      url: https://github.com/gap-system/PackageMaker/releases/download/v0.8/PackageMaker-0.8.tar.gz
 
-abstract: 
+abstract: |
 
 status: dev
 doc-html: doc/chap0.html
