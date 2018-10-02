@@ -18,6 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 
+BindGlobal( "DISABLED_ENTRY", MakeImmutable("DISABLED_ENTRY") );
+
 BindGlobal( "TranslateTemplate", function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
 
@@ -63,8 +65,12 @@ BindGlobal( "TranslateTemplate", function (template, outfile, subst)
                     for i in [1..Length(val)] do
                         PrintTo( out_stream, "  rec(\n" );
                         for key in RecNames(val[i]) do
-                            PrintTo( out_stream, "    ", key, " := ");
                             tmp := val[i].(key);
+                            if tmp = DISABLED_ENTRY then
+                                PrintTo( out_stream, "    #", key, " := TODO,\n");
+                                continue;
+                            fi;
+                            PrintTo( out_stream, "    ", key, " := ");
                             if IsString(tmp) then
                                 if '\n' in tmp then
                                     PrintTo( out_stream, "Concatenation(\n" );
@@ -608,8 +614,7 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
                 fi;
             fi;
             if p.(key) = "" then
-                p.(key) := "TODO";
-                #Unbind(p.(key));
+                p.(key) := DISABLED_ENTRY;
             fi;
         od;
 
