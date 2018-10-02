@@ -119,11 +119,6 @@ BindGlobal( "TranslateTemplate", function (template, outfile, subst)
     CloseStream(in_stream);
 end );
 
-BindGlobal( "FlushOutput", function()
-    # FIXME: Is there a better alternative to this?
-    Print("\c");
-end );
-
 BindGlobal( "AskYesNoQuestion", function( question )
     local stream, default, ans;
 
@@ -132,12 +127,12 @@ BindGlobal( "AskYesNoQuestion", function( question )
     Print(question);
     default := ValueOption( "default" );
     if default = true then
-        Print(" [Y/n] "); FlushOutput();
+        Print(" [Y/n] \c");
     elif default = false then
-        Print(" [y/N] "); FlushOutput();
+        Print(" [y/N] \c");
     else
         default := fail;
-        Print(" [y/n] "); FlushOutput();
+        Print(" [y/n] \c");
     fi;
 
     while true do
@@ -170,7 +165,7 @@ BindGlobal( "AskQuestion", function( question )
     if default <> fail then
         Print("[", default, "] ");
     fi;
-    FlushOutput();
+    Print("\c");
 
     # Read user input
     stream := InputTextUser();
