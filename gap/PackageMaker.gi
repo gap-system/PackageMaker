@@ -201,7 +201,10 @@ BindGlobal( "AskAlternativesQuestion", function( question, answers )
     fi;
 
     for i in [1..Length(answers)] do
-        Print(" (",i,")   ", answers[i][1], "\n");
+        ans := answers[i][1];
+        # HACK to get multi line answers printed more nicely
+        ans := ReplacedString(ans, "\n", "\n       ");
+        Print(" (",i,")   ", ans, "\n");
     od;
 
     while true do
