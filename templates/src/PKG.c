@@ -25,7 +25,8 @@ static StructGVarFunc GVarFuncs [] = {
 };
 
 /******************************************************************************
-*F  InitKernel( <module> )  . . . . . . . . initialise kernel data structures
+**
+*F  InitKernel( <module> ) . . . . . . . . .  initialise kernel data structures
 */
 static Int InitKernel( StructInitInfo *module )
 {
@@ -37,7 +38,8 @@ static Int InitKernel( StructInitInfo *module )
 }
 
 /******************************************************************************
-*F  InitLibrary( <module> ) . . . . . . .  initialise library data structures
+**
+*F  InitLibrary( <module> ) . . . . . . . .  initialise library data structures
 */
 static Int InitLibrary( StructInitInfo *module )
 {
@@ -49,7 +51,8 @@ static Int InitLibrary( StructInitInfo *module )
 }
 
 /******************************************************************************
-*F  InitInfopl()  . . . . . . . . . . . . . . . . . table of init functions
+**
+*F  Init__Dynamic() . . . . . . . . . . . . . . . . . . table of init functions
 */
 static StructInitInfo module = {
     .type = MODULE_DYNAMIC,

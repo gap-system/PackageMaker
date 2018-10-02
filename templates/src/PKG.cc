@@ -2,12 +2,6 @@
  * {{PackageName}}: {{Subtitle}}
  */
 
-// Include gmp.h *before* switching to C mode, because GMP detects when
-// compiled from C++ and then does some things differently, which would
-// cause an error if called from within extern "C". But libsing.h
-// (indirectly) includes gmp.h ...
-#include <gmp.h>
-
 extern "C" {
 #include "src/compiled.h"          /* GAP headers */
 }
@@ -33,7 +27,8 @@ static StructGVarFunc GVarFuncs [] = {
 };
 
 /******************************************************************************
-*F  InitKernel( <module> )  . . . . . . . . initialise kernel data structures
+**
+*F  InitKernel( <module> ) . . . . . . . . .  initialise kernel data structures
 */
 static Int InitKernel( StructInitInfo *module )
 {
@@ -45,7 +40,8 @@ static Int InitKernel( StructInitInfo *module )
 }
 
 /******************************************************************************
-*F  InitLibrary( <module> ) . . . . . . .  initialise library data structures
+**
+*F  InitLibrary( <module> ) . . . . . . . .  initialise library data structures
 */
 static Int InitLibrary( StructInitInfo *module )
 {
@@ -57,13 +53,26 @@ static Int InitLibrary( StructInitInfo *module )
 }
 
 /******************************************************************************
-*F  InitInfopl()  . . . . . . . . . . . . . . . . . table of init functions
+**
+*F  Init__Dynamic() . . . . . . . . . . . . . . . . . . table of init functions
 */
 static StructInitInfo module = {
-    .type = MODULE_DYNAMIC,
-    .name = "{{PackageName}}",
-    .initKernel = InitKernel,
-    .initLibrary = InitLibrary,
+ /* type        = */ MODULE_DYNAMIC,
+ /* name        = */ "{{PackageName}}",
+ /* revision_c  = */ 0,
+ /* revision_h  = */ 0,
+ /* version     = */ 0,
+ /* crc         = */ 0,
+ /* initKernel  = */ InitKernel,
+ /* initLibrary = */ InitLibrary,
+ /* checkInit   = */ 0,
+ /* preSave     = */ 0,
+ /* postSave    = */ 0,
+ /* postRestore = */ 0,
+ /* moduleStateSize      = */ 0,
+ /* moduleStateOffsetPtr = */ 0,
+ /* initModuleState      = */ 0,
+ /* destroyModuleState   = */ 0,
 };
 
 extern "C"
