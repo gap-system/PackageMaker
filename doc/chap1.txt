@@ -15,7 +15,7 @@
   
   [1X1.2-1 PackageWizard[101X
   
-  [29X[2XPackageWizard[102X( [3Xarg[103X ) [32X function
+  [33X[1;0Y[29X[2XPackageWizard[102X( [3Xarg[103X ) [32X function[133X
   
   [33X[0;0YInteractively create a package skeleton[133X
   

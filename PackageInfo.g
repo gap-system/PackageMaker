@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "PackageMaker",
 Subtitle := "A GAP package for creating new GAP packages",
-Version := "0.8",
-Date := "01/03/2016", # dd/mm/yyyy format
+Version := "0.9",
+Date := "02/10/2018", # dd/mm/yyyy format
 
 Persons := [
   rec(
@@ -19,7 +19,7 @@ Persons := [
     IsMaintainer := true,
     FirstNames := "Max",
     LastName := "Horn",
-    WWWHome := "http://www.quendi.de/math",
+    WWWHome := "https://www.quendi.de/math",
     Email := "max.horn@math.uni-giessen.de",
     PostalAddress := Concatenation(
                "AG Algebra\n",
@@ -60,15 +60,12 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.8",
+  GAP := ">= 4.9",
   NeededOtherPackages := [
-      [ "GAPDoc", ">= 1.5" ],
-      [ "AutoDoc", ">= 2016.02.16" ],
-    ],
-  SuggestedOtherPackages := [
-      [ "AtlasRep", ">= 1.5" ], # for CurrentDateTimeString
+      [ "AutoDoc", ">= 2018.02.14" ],
       [ "io", ">= 3.0" ],       # for IO_gettimeofday
     ],
+  SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
 
