@@ -501,7 +501,7 @@ InstallGlobalFunction( PackageWizard, function()
         pkginfo.PackageURLs := Concatenation("""
 SourceRepository := rec(
     Type := "git",
-    URL := Concatenation( "https://github.com/""", github.username, """/", ~.PackageName ),
+    URL := "https://github.com/""", github.username, "/", github.reponame, "\"", """,
 ),
 IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
 #SupportEmail   := "TODO",
