@@ -1,7 +1,7 @@
 #
 # PackageMaker - a GAP script for creating GAP packages
 #
-# Copyright (c) 2013-2014 Max Horn
+# Copyright (c) 2013-2018 Max Horn
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
