@@ -485,6 +485,9 @@ InstallGlobalFunction( PackageWizard, function()
         # TODO: just always do this??
         github.gh_pages := AskYesNoQuestion("Do you want to use GitHubPagesForGAP?" : default := true);
 
+        # TODO: just always do this??
+        github.travis := AskYesNoQuestion("Do you want to use Travis and Codecov?" : default := true);
+
         Print("I need to know the URL of the GitHub repository.\n");
         Print("It is of the form https://github/USER/REPOS.\n");
         github.username := AskQuestion("What is USER (typically your GitHub username)?"
@@ -646,6 +649,20 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
         fi;
     fi;
 
+    if IsBound(github.travis) and github.travis then
+        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/scripts" ) ) then
+            Error("Failed to create `scripts' directory in package directory");
+        fi;
+        TranslateTemplate(fail, ".codecov.yml", pkginfo );
+        TranslateTemplate(fail, ".release", pkginfo );
+        TranslateTemplate(fail, ".travis.yml", pkginfo );
+        TranslateTemplate(fail, "scripts/build_gap.sh", pkginfo );
+        TranslateTemplate(fail, "scripts/build_pkg.sh", pkginfo );
+        TranslateTemplate(fail, "scripts/gather-coverage.sh", pkginfo );
+        TranslateTemplate(fail, "scripts/run_tests.sh", pkginfo );
+        Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/.release")); # FIXME HACK
+        Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/scripts/*.sh")); # FIXME HACK
+    fi;
 
     #
     # Phase 3 (optional): Setup a git repository and gh-pages
