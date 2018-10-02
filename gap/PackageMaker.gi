@@ -504,7 +504,6 @@ SourceRepository := rec(
     URL := "https://github.com/""", github.username, "/", github.reponame, "\"", """,
 ),
 IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
-#SupportEmail   := "TODO",
 PackageWWWHome  := "https://""", github.username, ".github.io/", github.reponame, "/\"", """,
 PackageInfoURL  := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
 README_URL      := Concatenation( ~.PackageWWWHome, "README.md" ),
@@ -527,10 +526,7 @@ ArchiveURL      := Concatenation( ~.SourceRepository.URL,
         pkginfo.PackageURLs := Concatenation("""
 #SourceRepository := rec( Type := "TODO", URL := "URL" ),
 #IssueTrackerURL := "TODO",
-#SupportEmail := "TODO",
-
 PackageWWWHome := """, "\"", pkginfo.PackageWWWHome, "\"", """,
-
 PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
 README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
 ArchiveURL     := Concatenation( ~.PackageWWWHome,
