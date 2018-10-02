@@ -558,15 +558,31 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
             "    LoadDynamicModule(_PATH_SO);\n",
             "fi;\n",
             "Unbind(_PATH_SO);\n");
+
         if kernel = "C++" then
             pkginfo.KERNEL_EXT_LANG_EXT := "cc";
         else
             pkginfo.KERNEL_EXT_LANG_EXT := "c";
         fi;
 
+        pkginfo.AvailabilityTest := StripBeginEnd("""
+function()
+  local dir, lib;
+  dir := DirectoriesPackagePrograms("{{PackageName}}");
+  lib := Filename(dir, "{{PackageName}}.so");
+  if lib = fail then
+    LogPackageLoadingMessage(PACKAGE_WARNING,
+                             "failed to load kernel module of package {{PackageName}}");
+    return fail;
+  fi;
+  return true;
+end
+""", "\n");
+
     else
         pkginfo.KERNEL_EXT_INIT_G := "";
         pkginfo.KERNEL_EXT_LANG_EXT := "";
+        pkginfo.AvailabilityTest := "ReturnTrue";
     fi;
 
     #

@@ -45,7 +45,7 @@ Dependencies := rec(
   ExternalConditions := [ ],
 ),
 
-AvailabilityTest := ReturnTrue,
+AvailabilityTest := {{AvailabilityTest}},
 
 TestFile := "tst/testall.g",
 
