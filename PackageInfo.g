@@ -60,15 +60,12 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.8",
+  GAP := ">= 4.9",
   NeededOtherPackages := [
-      [ "GAPDoc", ">= 1.5" ],
-      [ "AutoDoc", ">= 2016.02.16" ],
-    ],
-  SuggestedOtherPackages := [
-      [ "AtlasRep", ">= 1.5" ], # for CurrentDateTimeString
+      [ "AutoDoc", ">= 2018.02.14" ],
       [ "io", ">= 3.0" ],       # for IO_gettimeofday
     ],
+  SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
 

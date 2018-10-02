@@ -416,22 +416,8 @@ end );
 # Return current date as a string with format DD/MM/YYYY.
 BindGlobal( "Today", function()
     local secs, tmp, date;
-    if IsBound(IO_gettimeofday) then
-        secs := IO_gettimeofday().tv_sec;
-    elif IsBound(CurrentDateTimeString) then
-        tmp := CurrentDateTimeString(["-u", "+%s"]);
-    else
-        tmp := Chomp(Command("date", [ "-u", "+%s" ]));
-    fi;
-
-    if IsBound(tmp) and IsString(tmp) and tmp <> "unknown" then
-        secs := Int(tmp);
-    fi;
-
-    if not IsBound(secs) then
-        # We failed to determine the current date
-        return "TODO";
-    fi;
+    tmp := IO_gettimeofday();
+    secs := tmp.tv_sec;
 
     date := DMYDay(Int(secs / 86400));
     date := date + [100, 100, 0];
