@@ -561,19 +561,14 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
             "    LoadDynamicModule(_PATH_SO);\n",
             "fi;\n",
             "Unbind(_PATH_SO);\n");
-        pkginfo.KERNEL_EXT_MAKEDOC_G := Concatenation("\nPrintTo(\"VERSION\", PackageInfo(\"",pkginfo.PackageName,"\")[1].Version);\n");
         if kernel = "C++" then
-            pkginfo.KERNEL_EXT_LANG_CONFIGURE_AC := "AC_PROG_CXX\nAC_LANG([C++])";
             pkginfo.KERNEL_EXT_LANG_EXT := "cc";
         else
-            pkginfo.KERNEL_EXT_LANG_CONFIGURE_AC := "AC_PROG_CC\nAC_LANG([C])";
             pkginfo.KERNEL_EXT_LANG_EXT := "c";
         fi;
 
     else
         pkginfo.KERNEL_EXT_INIT_G := "";
-        pkginfo.KERNEL_EXT_MAKEDOC_G := "";
-        pkginfo.KERNEL_EXT_LANG_CONFIGURE_AC := "";
         pkginfo.KERNEL_EXT_LANG_EXT := "";
     fi;
 
@@ -649,8 +644,9 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
     if kernel <> fail then
         # create a simple kernel extension with a build system
 
-        TranslateTemplate(fail, "Makefile.am", pkginfo );
-        TranslateTemplate(fail, "configure.ac", pkginfo );
+        TranslateTemplate(fail, "Makefile.in", pkginfo );
+        TranslateTemplate(fail, "configure", pkginfo );
+        Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/configure")); # FIXME HACK
 
         if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/src" ) ) then
             Error("Failed to create `src' directory in package directory");
@@ -660,19 +656,6 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
         else
             TranslateTemplate("src/PKG.c", Concatenation("src/", pkginfo.PackageName, ".c"), pkginfo );
         fi;
-
-        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/cnf" ) ) then
-            Error("Failed to create `cnf' directory in package directory");
-        fi;
-        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/cnf/m4" ) ) then
-            Error("Failed to create `m4' directory in package directory");
-        fi;
-        TranslateTemplate(fail, "cnf/m4/ac_find_gap.m4", pkginfo );
-
-        TranslateTemplate(fail, "autogen.sh", pkginfo );
-        Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/autogen.sh")); # FIXME HACK
-
-        PrintTo( Concatenation( pkginfo.PackageName, "/VERSION" ), pkginfo.Version );
     fi;
 
 
