@@ -40,14 +40,12 @@ PackageDoc := rec(
 
 Dependencies := rec(
   GAP := ">= 4.9",
-  NeededOtherPackages := [ [ "GAPDoc", ">= 1.6.1" ] ],
+  NeededOtherPackages := [ ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
 
-AvailabilityTest := function()
-        return true;
-    end,
+AvailabilityTest := ReturnTrue,
 
 TestFile := "tst/testall.g",
 
