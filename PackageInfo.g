@@ -19,7 +19,7 @@ Persons := [
     IsMaintainer := true,
     FirstNames := "Max",
     LastName := "Horn",
-    WWWHome := "http://www.quendi.de/math",
+    WWWHome := "https://www.quendi.de/math",
     Email := "max.horn@math.uni-giessen.de",
     PostalAddress := Concatenation(
                "AG Algebra\n",

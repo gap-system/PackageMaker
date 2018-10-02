@@ -1,7 +1,7 @@
 PackageMaker
 ============
 
-PackageMaker is a [GAP](http://www.gap-system.org/) package that makes
+PackageMaker is a [GAP](https://www.gap-system.org/) package that makes
 it easy and convenient to create new GAP packages.
 
 TODO: adjust the instructions below to the fact that PackageMaker now is

@@ -516,7 +516,7 @@ ArchiveURL      := Concatenation( ~.SourceRepository.URL,
     else
         pkginfo.PackageWWWHome := AskQuestion("URL of package homepage?");
         if pkginfo.PackageWWWHome = "" then
-            pkginfo.PackageWWWHome := "http://TODO";
+            pkginfo.PackageWWWHome := "https://TODO";
         fi;
 
         # Ensure the URL ends with a trailing slash.
