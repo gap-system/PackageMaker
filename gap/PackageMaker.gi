@@ -592,6 +592,9 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
             fi;
             if p.(key) = "" then
                 p.(key) := DISABLED_ENTRY;
+            else
+                # small hack to allow interactive input of multi-line postal addresses
+                p.(key) := ReplacedString(p.(key), "\\n", "\n");
             fi;
         od;
 
