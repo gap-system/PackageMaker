@@ -10,6 +10,7 @@ addons:
   apt_packages:
     - libgmp-dev
     - libreadline-dev
+    - zlib1g-dev
 
 matrix:
   include:
