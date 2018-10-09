@@ -11,11 +11,11 @@ MODULE_NAME = {{PackageName}}
 SOURCES = src/{{PackageName}}.{{KERNEL_EXT_LANG_EXT}}
 
 ########################################################################
-# Do not edit below (unless you know what you're doing.
+# Do not edit below unless you know what you're doing
 ########################################################################
 
 ########################################################################
-# Some variables (that should come from GAP's configure'd setup
+# Some variables that come from GAP via our configure script
 ########################################################################
 GAPPATH = @GAPPATH@
 GAPARCH = @GAPARCH@
@@ -33,11 +33,10 @@ all: $(GAPINSTALLIB)
 
 ########################################################################
 # Object files
+# For each file FOO.c in SOURCES, add gen/FOO.lo to OBJS; similar
+# for .cc files
 ########################################################################
-
-# OBJS shall contain the names of all object files that constitute the
-# package's kernel code.
-OBJS = $(patsubst %.c,gen/%.lo,$(SOURCES))
+OBJS = $(patsubst %.cc,gen/%.lo,$(patsubst %.c,gen/%.lo,$(SOURCES)))
 
 ########################################################################
 # Quiet rules.
@@ -76,12 +75,15 @@ ALL_DEP_FILES = $(wildcard $(addsuffix /*.d,$(DEPDIRS)))
 # compiler; and more.
 DEPFLAGS = -MQ "$@" -MMD -MP -MF $(@D)/$(*F).d
 
+# build rule for C code
 gen/%.lo: %.c
 	@$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -c $< -o $@
 
+# build rule for C++ code
 gen/%.lo: %.cc
 	@$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -c $< -o $@
 
+# build rule for linking all object files together into a kernel extension
 $(GAPINSTALLIB): $(OBJS)
 	@$(MKDIR_P) $(BINARCHDIR)
 	@$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" $(OBJS) -o $@
@@ -104,3 +106,10 @@ Makefile: configure Makefile.in
 	./configure "@GAPPATH@"
 
 .PHONY: default clean distclean doc check
+
+########################################################################
+# Makefile debugging trick:
+# call print-VARIABLE to see the runtime value of any variable
+########################################################################
+print-%:
+	@echo '$*=$($*)'
