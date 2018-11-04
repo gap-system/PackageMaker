@@ -21,7 +21,7 @@ if test ! -r $GAPPATH/sysinfo.gap ; then
     echo "Either your GAPPATH is incorrect or the GAP it is pointing to"
     echo "is not properly compiled (do \"./configure && make\" there first)."
     echo
-    echo Aborting... No Makefile is generated.
+    echo "Aborting... No Makefile is generated."
     echo
     exit 1
 fi
