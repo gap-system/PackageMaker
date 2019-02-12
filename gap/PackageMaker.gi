@@ -1,7 +1,7 @@
 #
 # PackageMaker - a GAP script for creating GAP packages
 #
-# Copyright (c) 2013-2018 Max Horn
+# Copyright (c) 2013-2019 Max Horn
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -640,6 +640,7 @@ end
     fi;
 
     TranslateTemplate(fail, "README.md", pkginfo );
+    TranslateTemplate(fail, "LICENSE", pkginfo );
     TranslateTemplate("PackageInfo.g.in", "PackageInfo.g", pkginfo );
     TranslateTemplate(fail, "init.g", pkginfo );
     TranslateTemplate(fail, "read.g", pkginfo );

@@ -12,6 +12,7 @@ PackageName := "PackageMaker",
 Subtitle := "A GAP package for creating new GAP packages",
 Version := "0.9.2",
 Date := "08/10/2018", # dd/mm/yyyy format
+License := "GPL-2.0-or-later",
 
 Persons := [
   rec(
