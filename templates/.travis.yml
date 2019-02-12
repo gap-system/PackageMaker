@@ -3,8 +3,10 @@ env:
   global:
     - GAPROOT=gaproot
     - COVDIR=coverage
+    # list of package to clone via git
+    #- GAP_PKGS_TO_CLONE="SOME_PACKAGE"
     # list of package to compile; io and profiling are always needed for coverage reports
-    - GAP_PKGS_TO_BUILD="io profiling"
+    #- GAP_PKGS_TO_BUILD="io profiling SOME_OTHER_PACKAGE"
 
 addons:
   apt_packages:
@@ -14,7 +16,9 @@ addons:
 
 matrix:
   include:
-    - env: CFLAGS="-O2"
+    - env: GAPBRANCH="master"
+    - env: GAPBRANCH="stable-4.10"
+    - env: GAPBRANCH="stable-4.9"
 
 branches:
   only:
@@ -22,6 +26,7 @@ branches:
 
 before_script:
   - export GAPROOT="$HOME/gap"
+  - git clone https://github.com/gap-system/pkg-ci-scripts.git scripts
   - scripts/build_gap.sh
 script:
   - scripts/build_pkg.sh && scripts/run_tests.sh

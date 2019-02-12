@@ -681,10 +681,6 @@ end
         TranslateTemplate(fail, ".codecov.yml", pkginfo );
         TranslateTemplate(fail, ".release", pkginfo );
         TranslateTemplate(fail, ".travis.yml", pkginfo );
-        TranslateTemplate(fail, "scripts/build_gap.sh", pkginfo );
-        TranslateTemplate(fail, "scripts/build_pkg.sh", pkginfo );
-        TranslateTemplate(fail, "scripts/gather-coverage.sh", pkginfo );
-        TranslateTemplate(fail, "scripts/run_tests.sh", pkginfo );
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/.release")); # FIXME HACK
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/scripts/*.sh")); # FIXME HACK
     fi;
