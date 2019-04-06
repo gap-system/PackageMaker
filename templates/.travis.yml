@@ -1,8 +1,6 @@
 language: c
 env:
   global:
-    - GAPROOT=gaproot
-    - COVDIR=coverage
     # list of package to clone via git
     #- GAP_PKGS_TO_CLONE="SOME_PACKAGE"
     # list of package to compile; io and profiling are always needed for coverage reports
@@ -16,16 +14,15 @@ addons:
 
 matrix:
   include:
-    - env: GAPBRANCH="master"
-    - env: GAPBRANCH="stable-4.10"
-    - env: GAPBRANCH="stable-4.9"
+    - env: GAPBRANCH=master
+    - env: GAPBRANCH=stable-4.10
+    - env: GAPBRANCH=stable-4.9
 
 branches:
   only:
     - master
 
 before_script:
-  - export GAPROOT="$HOME/gap"
   - git clone https://github.com/gap-system/pkg-ci-scripts.git scripts
   - scripts/build_gap.sh
 script:
