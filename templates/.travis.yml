@@ -28,5 +28,5 @@ before_script:
 script:
   - scripts/build_pkg.sh && scripts/run_tests.sh
 after_script:
-  - bash scripts/gather-coverage.sh
+  - scripts/gather-coverage.sh
   - bash <(curl -s https://codecov.io/bash)
