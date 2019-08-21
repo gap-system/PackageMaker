@@ -675,14 +675,10 @@ end
     fi;
 
     if IsBound(github.travis) and github.travis then
-        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/scripts" ) ) then
-            Error("Failed to create `scripts' directory in package directory");
-        fi;
         TranslateTemplate(fail, ".codecov.yml", pkginfo );
         TranslateTemplate(fail, ".release", pkginfo );
         TranslateTemplate(fail, ".travis.yml", pkginfo );
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/.release")); # FIXME HACK
-        Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/scripts/*.sh")); # FIXME HACK
     fi;
 
     #
