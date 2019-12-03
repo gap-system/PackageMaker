@@ -661,6 +661,7 @@ end
         # create a simple kernel extension with a build system
 
         TranslateTemplate(fail, "Makefile.in", pkginfo );
+        TranslateTemplate(fail, "Makefile.gappkg", pkginfo );
         TranslateTemplate(fail, "configure", pkginfo );
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/configure")); # FIXME HACK
 
