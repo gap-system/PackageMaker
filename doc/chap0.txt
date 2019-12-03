@@ -6,10 +6,10 @@
                  [1X A [5XGAP[105X package for creating new [5XGAP[105X packages [101X
   
   
-                                     0.9.2
+                                     0.9.3
   
   
-                                 8 October 2018
+                                3 December 2019
   
   
                                     Max Horn
@@ -17,13 +17,12 @@
   
   
   Max Horn
-      Email:    [7Xmailto:max.horn@math.uni-giessen.de[107X
+      Email:    [7Xmailto:max.horn@uni-siegen.de[107X
       Homepage: [7Xhttps://www.quendi.de/math[107X
-      Address:  [33X[0;14YAG Algebra[133X
-                [33X[0;14YMathematisches Institut[133X
-                [33X[0;14YJustus-Liebig-Universität Gießen[133X
-                [33X[0;14YArndtstraße 2[133X
-                [33X[0;14Y35392 Gießen[133X
+      Address:  [33X[0;14YDepartment Mathematik[133X
+                [33X[0;14YUniversität Siegen[133X
+                [33X[0;14YWalter-Flex-Straße 3[133X
+                [33X[0;14Y57072 Siegen[133X
                 [33X[0;14YGermany[133X
   
   
