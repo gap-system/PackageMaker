@@ -19,17 +19,53 @@
 #
 
 #! @Chapter PackageMaker
-#! TODO 1
 
-#! @Section What is PackageMaker?
-#! TODO 2
+#! @Section What is &PackageMaker;?
+#! &PackageMaker; is a &GAP; package that makes it easy to create
+#! new &GAP; packages, by providing a <Q>wizard</Q> function that
+#! asks a few questions about the new packages, such as its name
+#! and authors; and from that creates a complete usable skeleton
+#! packages. It optionally can set up several advanced features,
+#! including:
+#! - a git repository for use on GitHub;
+#! - a simple C or C++ kernel extension, including a build system;
+#! - continuous integration using Travis CI;
+#! - code coverage tracking;
+#! - ... and more.
+#!
+#!
 
-#! @Section Using PackageMaker?
-#! TODO 3
+#! @Section How does one use &PackageMaker;?
+#! Simply load it, then invoke <C>PackageWizard()</C> and follow
+#! the instructions.
 
 #! @Description
-#!   Interactively create a package skeleton
+#! Interactively create a package skeleton.
+#!
+#! @BeginLogSession
+#! gap> PackageWizard();
+#! Welcome to the GAP PackageMaker Wizard.
+#! I will now guide you step-by-step through the package
+#! creation process by asking you some questions.
+#! 
+#! What is the name of the package? SuperPackage
+#! Enter a short (one sentence) description of your package: A super nice new package
+#! Shall I prepare your new package for GitHub? [Y/n] y
+#! Do you want to use GitHubPagesForGAP? [Y/n] y
+#! Do you want to use Travis and Codecov? [Y/n] y
+#! I need to know the URL of the GitHub repository.
+#! It is of the form https://github/USER/REPOS.
+#! What is USER (typically your GitHub username)? [mhorn]
+#! ...
+#! @EndLogSession
 DeclareGlobalFunction( "PackageWizard" );
 
 #! @Section What next?
-#! TODO 5
+#! Some suggestions for what to do next:
+#! - edit the <F>README.md</F> file of your new package
+#! - add some actual functionality to it
+#! - if you asked for a kernel extension, try to compile it
+#! - try loading your package
+#! - add some `.tst` test files
+#! - ...
+
