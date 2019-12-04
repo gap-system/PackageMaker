@@ -136,7 +136,12 @@ BindGlobal( "AskYesNoQuestion", function( question )
     fi;
 
     while true do
-        ans := CharInt(ReadByte(stream));
+        ans := ReadByte(stream);
+        if ans = 3 or ans = 4 then
+            Print("\nUser aborted\n"); # HACK since Ctrl-C does not work
+            JUMP_TO_CATCH("abort"); # HACK, undocumented command
+        fi;
+        ans := CharInt(ans);
         if ans in "yYnN" then
             Print([ans,'\n']);
             ans := ans in "yY";
@@ -145,9 +150,6 @@ BindGlobal( "AskYesNoQuestion", function( question )
             Print("\n");
             ans := default;
             break;
-        elif ans = '\c' then
-            Print("\nUser aborted\n"); # HACK since Ctrl-C does not work
-            JUMP_TO_CATCH("abort"); # HACK, undocumented command
         fi;
     od;
 
@@ -175,6 +177,12 @@ BindGlobal( "AskQuestion", function( question )
     GAPInfo.History := history_bak;
     CloseStream(stream);
 
+    # Catch Ctrl-D
+    if ans = fail then
+        Print("\nUser aborted\n");
+        JUMP_TO_CATCH("abort");
+    fi;
+
     # Clean it up
     if ans = "\n" and default <> fail then
         ans := default;
@@ -183,7 +191,11 @@ BindGlobal( "AskQuestion", function( question )
     fi;
     NormalizeWhitespace("ans");
 
-    if ans = "quit" then Error("User aborted"); fi; # HACK since Ctrl-C does not work
+    # HACK since Ctrl-C does not work
+    if ans = "quit" then
+        Print("\nUser aborted\n");
+        JUMP_TO_CATCH("abort");
+    fi;
 
     return ans;
 end );

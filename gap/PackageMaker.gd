@@ -40,7 +40,8 @@
 #! the instructions.
 
 #! @Description
-#! Interactively create a package skeleton.
+#! Interactively create a package skeleton. You can abort by either
+#! answering <Q>quit</Q> or pressing <C>Ctrl-D</C>
 #!
 #! @BeginLogSession
 #! gap> PackageWizard();
