@@ -3,7 +3,7 @@
  */
 
 extern "C" {
-#include "src/compiled.h"          /* GAP headers */
+#include <gap_all.h>    // GAP headers
 }
 
 
