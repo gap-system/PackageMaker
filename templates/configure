@@ -4,11 +4,15 @@
 
 set -e
 
-if test -z "$1"; then
-  GAPPATH=../..; echo "Using ../.. as default GAP path";
-else
-  GAPPATH=$1;
-fi
+GAPPATH=../..
+while test "$#" -ge 1 ; do
+  option="$1" ; shift
+  case "$option" in
+    --with-gaproot=*) GAPPATH=${option#--with-gaproot=}; ;;
+    -*)               echo "ERROR: unsupported argument $option" ; exit 1;;
+    *)                GAPPATH="$option" ;;
+  esac
+done
 
 if test ! -r "$GAPPATH/sysinfo.gap" ; then
     echo
@@ -27,9 +31,4 @@ if test ! -r "$GAPPATH/sysinfo.gap" ; then
 fi
 
 echo "Using settings from $GAPPATH/sysinfo.gap"
-
-# update Makefile.gappkg from GAP installation, if possible
-test -r "$GAPPATH/etc/Makefile.gappkg" && cp "$GAPPATH/etc/Makefile.gappkg" .
-
-#
 sed -e "s;@GAPPATH@;$GAPPATH;g" Makefile.in > Makefile
