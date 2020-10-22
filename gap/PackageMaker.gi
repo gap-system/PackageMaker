@@ -378,6 +378,14 @@ BindGlobal( "CreateGitRepository", function(dir, github)
             Error(dir, " is not a directory");
         fi;
 
+        # reset the history of gh-pages
+        RunGit(["reset", "6c61c16db79418c6b250f4c6dc84ad70f0a7b60f"],
+               "Failed to reset gh-pages branch to initial commit" );
+        RunGit(["add", "-A"],
+               "Failed to add back working tree to the gh-pages index" );
+        RunGit(["commit", "--amend", "--author=\"Bot <empty>\"", "--no-edit"],
+               "Failed to amend the initial commit" );
+
         # We use the shell for the next commands to get glob expansion
         shell := Filename(DirectoriesSystemPrograms(), "sh");
 
