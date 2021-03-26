@@ -705,6 +705,7 @@ end
     #
     if create_repo then
 
+        TranslateTemplate(fail, ".gitattributes", pkginfo );
         TranslateTemplate(fail, ".gitignore", pkginfo );
 
         dir := Directory(pkginfo.PackageName);
