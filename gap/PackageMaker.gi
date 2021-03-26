@@ -506,7 +506,7 @@ InstallGlobalFunction( PackageWizard, function()
         github.gh_pages := AskYesNoQuestion("Do you want to use GitHubPagesForGAP?" : default := true);
 
         # TODO: just always do this??
-        github.travis := AskYesNoQuestion("Do you want to use Travis and Codecov?" : default := true);
+        github.ci := AskYesNoQuestion("Do you want to use GitHubActions and Codecov?" : default := true);
 
         Print("I need to know the URL of the GitHub repository.\n");
         Print("It is of the form https://github/USER/REPOS.\n");
@@ -687,10 +687,16 @@ end
         fi;
     fi;
 
-    if IsBound(github.travis) and github.travis then
+    if IsBound(github.ci) and github.ci then
+        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/.github" ) ) then
+            Error("Failed to create `.github' directory in package directory");
+        fi;
+        if not AUTODOC_CreateDirIfMissing( Concatenation( pkginfo.PackageName, "/.github/workflows" ) ) then
+            Error("Failed to create `.github/workflows' directory in package directory");
+        fi;
         TranslateTemplate(fail, ".codecov.yml", pkginfo );
         TranslateTemplate(fail, ".release", pkginfo );
-        TranslateTemplate(fail, ".travis.yml", pkginfo );
+        TranslateTemplate(fail, ".github/workflows/CI.yml", pkginfo );
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/.release")); # FIXME HACK
     fi;
 
