@@ -20,6 +20,33 @@
 
 BindGlobal( "DISABLED_ENTRY", MakeImmutable("DISABLED_ENTRY") );
 
+BindGlobal( "CopyTemplate", function (template, outfile, subst)
+    local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
+
+    tmp := DirectoriesPackageLibrary( "PackageMaker", "templates" );
+    if template = fail then
+        template := Filename( tmp, outfile );
+    else
+        template := Filename( tmp, template );
+    fi;
+    outfile := Concatenation( subst.PackageName, "/", outfile );
+
+    in_stream := InputTextFile( template );
+    out_stream := OutputTextFile( outfile, false );
+    SetPrintFormattingStatus( out_stream, false );
+
+    while not IsEndOfStream( in_stream ) do
+        line := ReadLine( in_stream );
+        if line = fail then
+            break;
+        fi;
+        WriteAll( out_stream, line );
+    od;
+
+    CloseStream(out_stream);
+    CloseStream(in_stream);
+end);
+
 BindGlobal( "TranslateTemplate", function (template, outfile, subst)
     local out_stream, in_stream, line, pos, end_pos, key, val, i, tmp, c;
 
@@ -696,7 +723,7 @@ end
         fi;
         TranslateTemplate(fail, ".codecov.yml", pkginfo );
         TranslateTemplate(fail, ".release", pkginfo );
-        TranslateTemplate(fail, ".github/workflows/CI.yml", pkginfo );
+        CopyTemplate(fail, ".github/workflows/CI.yml", pkginfo);
         Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/.release")); # FIXME HACK
     fi;
 
