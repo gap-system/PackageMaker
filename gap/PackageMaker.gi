@@ -337,7 +337,7 @@ BindGlobal( "Command", function(cmd, args)
 end );
 
 BindGlobal( "CreateGitRepository", function(dir, github)
-    local path, stdin, stdout, cmd_full, RunGit, remote, tmp, shell, masterdir;
+    local path, stdin, stdout, cmd_full, RunGit, remote, tmp, shell, maindir;
 
     path := DirectoriesSystemPrograms();
     cmd_full := Filename( path, "git" );
@@ -358,7 +358,7 @@ BindGlobal( "CreateGitRepository", function(dir, github)
 
     Print("Creating the git repository...\n");
 
-    RunGit(["init"],
+    RunGit(["init", "-b", "main"],
            "Failed to create git repository");
     RunGit(["add", "."],
            "Failed to add files to git repository");
@@ -373,8 +373,8 @@ BindGlobal( "CreateGitRepository", function(dir, github)
            "Failed to add GitHub remote to git repository");
 
 #   The following command unfortunately does not work:
-#     RunGit(["branch", "-u", "origin", "master"],
-#            "Failed to set upstream remote for master branch");
+#     RunGit(["branch", "-u", "origin", "main"],
+#            "Failed to set upstream remote for main branch");
 
     if github.gh_pages then
         # Setup everything for GitHubPagesForGAP, following the instructions
@@ -399,7 +399,7 @@ BindGlobal( "CreateGitRepository", function(dir, github)
                "Failed to create gh-pages worktree");
 
         # cd gh-pages
-        masterdir := dir;
+        maindir := dir;
         dir := Directory(Filename(dir, "gh-pages"));
         if not IsDirectoryPath(dir) then
             Error(dir, " is not a directory");
@@ -431,7 +431,7 @@ BindGlobal( "CreateGitRepository", function(dir, github)
         RunGit(["commit", "-m", "Setup gh-pages based on GitHubPagesForGAP"],
                "Failed committing files to gh-pages branch");
 
-        dir := masterdir;
+        dir := maindir;
     fi;
 
 
@@ -445,8 +445,8 @@ BindGlobal( "CreateGitRepository", function(dir, github)
         return;
     fi;
 
-    RunGit(["push", "-u", "origin", "master"],
-           "Failed to push master branch to GitHub");
+    RunGit(["push", "-u", "origin", "main"],
+           "Failed to push main branch to GitHub");
 
     if github.gh_pages then
 
