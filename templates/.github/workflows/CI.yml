@@ -1,9 +1,12 @@
 name: CI
 
-# Trigger the workflow on push or pull request
+# Trigger the workflow on push to master / main, or on pull request
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
 
 concurrency:
   # group by workflow and ref; the last slightly strange component ensures that for pull
