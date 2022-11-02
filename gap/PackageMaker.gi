@@ -722,9 +722,7 @@ end
             Error("Failed to create `.github/workflows' directory in package directory");
         fi;
         TranslateTemplate(fail, ".codecov.yml", pkginfo );
-        TranslateTemplate(fail, ".release", pkginfo );
         CopyTemplate(fail, ".github/workflows/CI.yml", pkginfo);
-        Exec(Concatenation("chmod a+x ", pkginfo.PackageName, "/.release")); # FIXME HACK
     fi;
 
     #
