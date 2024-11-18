@@ -591,12 +591,11 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
 
     if kernel <> fail then
 
-        pkginfo.KERNEL_EXT_INIT_G := Concatenation(
-            "_PATH_SO:=Filename(DirectoriesPackagePrograms(\"",pkginfo.PackageName,"\"), \"",pkginfo.PackageName,".so\");\n",
-            "if _PATH_SO <> fail then\n",
-            "    LoadDynamicModule(_PATH_SO);\n",
-            "fi;\n",
-            "Unbind(_PATH_SO);\n");
+        pkginfo.KERNEL_EXT_INIT_G := StripBeginEnd("""
+if not LoadKernelExtension("{{PackageName}}") then
+  Error("failed to load kernel module of package {{PackageName}}");
+fi;
+""", "\n");
 
         if kernel = "C++" then
             pkginfo.KERNEL_EXT_LANG_EXT := "cc";
@@ -606,13 +605,10 @@ ArchiveURL     := Concatenation( ~.PackageWWWHome,
 
         pkginfo.AvailabilityTest := StripBeginEnd("""
 function()
-  local dir, lib;
-  dir := DirectoriesPackagePrograms("{{PackageName}}");
-  lib := Filename(dir, "{{PackageName}}.so");
-  if lib = fail then
+  if not IsKernelExtensionAvailable("{{PackageName}}") then
     LogPackageLoadingMessage(PACKAGE_WARNING,
                              "failed to load kernel module of package {{PackageName}}");
-    return fail;
+    return false;
   fi;
   return true;
 end
