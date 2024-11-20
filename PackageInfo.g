@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "PackageMaker",
 Subtitle := "A GAP package for creating new GAP packages",
-Version := "0.9.3",
-Date := "03/12/2019", # dd/mm/yyyy format
+Version := "0.10.0",
+Date := "20/11/2024", # dd/mm/yyyy format
 License := "GPL-2.0-or-later",
 
 Persons := [
