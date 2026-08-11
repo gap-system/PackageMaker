@@ -289,6 +289,14 @@ BindGlobal( "PKGMKR_ValidateSubtitle", function( answers, value )
 end );
 
 BindGlobal( "PKGMKR_CheckGitHubUsername", function( answers, value )
+    if IsString( value )
+       and ( StartsWith( value, "http://" )
+             or StartsWith( value, "https://" )
+             or StartsWith( value, "ftp://" )
+             or ( 0 < Length( value ) and value[1] = '@' ) ) then
+        return "The GitHub username must be written without '@' or a URL.";
+    fi;
+
     if 0 < Length( value ) and value[1] <> '-'
        and ForAll( value, c -> IsAlphaChar( c ) or IsDigitChar( c ) or c = '-' ) then
         return true;

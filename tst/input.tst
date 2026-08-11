@@ -146,6 +146,12 @@ true
 gap> PKGMKR_CheckGitHubUsername( rec(), "-octo-cat" ) =
 > "The name must be nonempty, consist of alphanumerical characters or '-', and must not start with '-'.";
 true
+gap> PKGMKR_CheckGitHubUsername( rec(), "@octo-cat" ) =
+> "The GitHub username must be written without '@' or a URL.";
+true
+gap> PKGMKR_CheckGitHubUsername( rec(), "https://github.com/octo-cat" ) =
+> "The GitHub username must be written without '@' or a URL.";
+true
 gap> PKGMKR_CheckRepositoryName( rec(), "demo.repo" );
 true
 gap> PKGMKR_CheckRepositoryName( rec(), "-demo" ) =
