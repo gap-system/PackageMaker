@@ -205,7 +205,9 @@ BindGlobal( "PKGMKR_AskQuestions", function( spec, ui, answers )
     return answers;
 end );
 
-BindGlobal( "EXTRA_PERSON_KEYS", [ "Email", "WWWHome", "Institution", "Place", "PostalAddress"] );
+BindGlobal( "EXTRA_PERSON_KEYS",
+    [ "Email", "WWWHome", "GitHubUsername",
+      "Institution", "Place", "PostalAddress" ] );
 
 BindGlobal( "PKGMKR_PrintMessage", function( prompt )
     local line;
@@ -505,23 +507,38 @@ BindGlobal( "PKGMKR_AskPersons", function()
         name := Concatenation(p.LastName, ", ", p.FirstNames);
         for key in EXTRA_PERSON_KEYS do
             q := Concatenation(key, "?");
-            if IsBound(pers.(name)) then
-                tmp := pers.(name).(key);
-            else
-                tmp := [];
-            fi;
-            if Length(tmp) = 0 then
-                p.(key) := AskQuestion(q);
-            elif Length(tmp) = 1 then
-                p.(key) := AskQuestion(q : default := tmp[1]);
-            else
-                tmp := List(tmp, x -> [x,x]);
-                Add(tmp, ["other", fail]);
-                p.(key) := AskAlternativesQuestion(q, tmp);
-                if p.(key) = fail then
-                    p.(key) := AskQuestion(q);
+            while true do
+                if IsBound(pers.(name)) then
+                    tmp := pers.(name).(key);
+                else
+                    tmp := [];
                 fi;
-            fi;
+                if Length(tmp) = 0 then
+                    p.(key) := AskQuestion(q);
+                elif Length(tmp) = 1 then
+                    p.(key) := AskQuestion(q : default := tmp[1]);
+                else
+                    tmp := List(tmp, x -> [x,x]);
+                    Add(tmp, ["other", fail]);
+                    p.(key) := AskAlternativesQuestion(q, tmp);
+                    if p.(key) = fail then
+                        p.(key) := AskQuestion(q);
+                    fi;
+                fi;
+
+                if p.(key) = "" then
+                    break;
+                fi;
+                if key = "GitHubUsername" then
+                    tmp := PKGMKR_CheckGitHubUsername( p, p.(key) );
+                    if tmp = true then
+                        break;
+                    fi;
+                    Print( tmp, "\n" );
+                else
+                    break;
+                fi;
+            od;
             if p.(key) = "" then
                 p.(key) := DISABLED_ENTRY;
             else

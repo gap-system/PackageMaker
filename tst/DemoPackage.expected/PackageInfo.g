@@ -23,6 +23,7 @@ Persons := [
     IsAuthor := true,
     IsMaintainer := true,
     PostalAddress := "123 Test Street\n12345 Test City",
+    GitHubUsername := "demo-user",
     Place := "Test City",
     Institution := "PackageMaker Test Suite",
   ),
