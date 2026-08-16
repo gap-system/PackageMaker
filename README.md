@@ -78,7 +78,7 @@ useful:
 Please submit bug reports, suggestions for improvements and patches via
 the [issue tracker](https://github.com/gap-packages/PackageMaker/issues).
 
-You can also contact me directly via [email](mhorn@rptu.de).
+You can also contact me directly via [email](mailto:mhorn@rptu.de).
 
 ## License
 
