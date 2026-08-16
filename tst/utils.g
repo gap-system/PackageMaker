@@ -11,6 +11,7 @@ BindGlobal( "PKGMKR_DemoPackageAnswers", function()
             rec(
                 Email := "demo@example.invalid",
                 FirstNames := "Demo",
+                GitHubUsername := "demo-user",
                 Institution := "PackageMaker Test Suite",
                 IsAuthor := true,
                 IsMaintainer := true,
